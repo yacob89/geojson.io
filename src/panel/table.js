@@ -40,6 +40,11 @@ module.exports = function(context) {
                                 if (i === j++) smartZoom(context.map, l, bounds);
                             });
                         })
+                        .on('blur', function(value, node) {
+                            var linkify = /(http:\/\/\S*)/g;
+                            debugger;
+                            node.value = value.replace(linkify, '<a href="$&">$&</a>');
+                        })
                     );
             }
 
