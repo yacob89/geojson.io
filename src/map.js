@@ -8,8 +8,11 @@ function setupMap(container) {
     var mapDiv = container.append('div')
         .attr('id', 'map');
 
-    var map = L.mapbox.map(mapDiv.node())
-        .setView([20, 0], 2);
+    var map = L.mapbox.map(mapDiv.node(), null, {
+        infoControl: {
+            position: 'bottomright'
+        }
+    }).setView([20, 0], 2);
 
     var layers = [{
         title: 'MapBox',

@@ -56,3 +56,5 @@ dist/site.mobile.js: src/mobile.js
 
 clean:
 	rm -f dist/*
+
+.PHONY: clean

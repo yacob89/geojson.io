@@ -23,7 +23,7 @@ function fileBar(updates) {
         var link = name.append('a')
             .attr('target', '_blank')
             .attr('class', 'icon-external-link')
-            .classed('hide', true);
+            .classed('active', true);
 
         var actions = [
             {
@@ -34,8 +34,8 @@ function fileBar(updates) {
                 }
             },
             {
-                title: 'Open',
-                icon: 'icon-folder-open-alt',
+                title: 'Add',
+                icon: 'plus',
                 action: function() {
                     event.source();
                 }
@@ -72,7 +72,6 @@ function fileBar(updates) {
             });
 
         buttons.append('span')
-            .attr('class', 'title')
             .text(function(d) {
                 return d.title;
             });
@@ -104,10 +103,10 @@ function fileBar(updates) {
             if (sourceUrl(d)) {
                 link
                     .attr('href', sourceUrl(d))
-                    .classed('hide', false);
+                    .classed('active', false);
             } else {
                 link
-                    .classed('hide', true);
+                    .classed('active', true);
             }
         }
     }

@@ -11,7 +11,7 @@ function sourcePanel(updates) {
 
     function panel(selection) {
 
-        if (!selection.classed('hide')) return hidePanel();
+        if (!selection.classed('active')) return hidePanel();
 
         var sources = [
             {
@@ -36,24 +36,22 @@ function sourcePanel(updates) {
 
         selection
             .html('')
-            .classed('hide', false)
-            .transition()
-            .style('opacity', 1);
+            .classed('active', false);
 
         var $top = selection
             .append('div')
-            .attr('class', 'import-sources col12 clearfix');
+            .attr('class', 'col12 pad2y clearfix');
 
        var $sources = $top.append('div')
-            .attr('class', 'col10')
-            .selectAll('div.import-source')
+            .attr('class', 'tabs col6 margin3 clearfix')
+            .selectAll('a')
             .data(sources)
             .enter()
-            .append('div')
-            .attr('class', 'import-source col4')
-            .append('div')
-            .attr('class', 'pad1 center clickable')
+            .append('a')
+            .attr('href', '#')
+            .attr('class', 'col4')
             .attr('title', function(d) { return d.alt; })
+            .text(function(d) { return d.title; })
             .on('click', clickSource);
 
         function clickSource(d) {
@@ -63,17 +61,6 @@ function sourcePanel(updates) {
             });
             d.action.apply(this, d);
         }
-
-        $sources.append('span')
-            .attr('class', function(d) {
-                return d.icon + ' icon-spaced';
-            });
-
-        $sources.append('span')
-            .attr('class', 'label')
-            .text(function(d) {
-                return d.title;
-            });
 
         $top.append('div')
             .attr('class', 'col2')
@@ -86,15 +73,7 @@ function sourcePanel(updates) {
             });
 
         function hidePanel(d) {
-            selection
-                .transition()
-                .duration(500)
-                .style('opacity', 0)
-                .each('end', function() {
-                    d3.select(this)
-                        .html('')
-                        .classed('hide', true);
-                });
+            selection.classed('active', true);
         }
 
         var $subpane = selection.append('div')

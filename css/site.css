@@ -1,101 +1,40 @@
-/* Elements */
-table tr td input,
-table tr th input {
-    border:none;
-}
-
-table thead {
-    background:#f7f7f7;
-    border:1px solid #ccc;
-}
-
-table td {
-    border:1px solid #ccc;
-}
-
-table thead tr th {
-    font-weight:bold;
-}
-
-table thead tr th,
-table tr th input,
-table tbody tr td input {
-    text-align:left;
-    font:inherit;
-    padding:5px;
-    width:150px;
-    box-sizing:border-box;
-    margin:0;
-}
-
-input[type=text] {
-    font:inherit;
-}
-
-/* Utility classes */
-
-.pad1 {
-    padding:10px;
-}
-
-.pad {
-    padding:20px;
-}
-
-.center {
-    text-align:center;
-}
-
-.fr {
-    float:right;
-}
-
-.drop {
-    margin-top:10px;
-}
-
-.fl {
-    float:left;
-}
-
+body, .container {
+  position:absolute;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  }
 #map {
-    position:absolute;
-    top:40px;
-    bottom:0;
-    left:0;
-    right:40%;
-}
-
-.left-panel {
-    background:#fff;
-    position:absolute;
-    top:40px;
-    bottom:0;
-    left:0;
-    right:40%;
-    z-index:9999;
-}
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  }
+.bottom-drawer {
+  z-index:1;
+  }
+.drop {
+  margin-top:10px;
+  }
 
 .right {
-    overflow-x:hidden;
-    position:absolute;
-    bottom:0;
-    top:0;
-    right:0;
-    width:40%;
-    min-width:400px;
-    box-sizing:border-box;
-    font-size:14px;
-    background:#f1f1f1;
-    transition:all 200ms;
-    -webkit-transition:all 200ms;
-    border-left: 1px solid #d9d9d9;
-    border-color: rgba(102,102,102,0.25);
-}
+  overflow-x:hidden;
+  position:absolute;
+  bottom:0;
+  top:0;
+  right:0;
+  width:40%;
+  min-width:400px;
+  font-size:14px;
+  background:#f1f1f1;
+  transition:all 200ms;
+  -webkit-transition:all 200ms;
+  border-left: 1px solid #d9d9d9;
+  border-color: rgba(102,102,102,0.25);
+  }
 
 #map.fullsize {
-    right:0;
-}
+  right:0;
+  }
 
 .right.hidden {
     height:40px;
@@ -153,103 +92,6 @@ p.intro-hint:hover {
     text-align:center;
     width:40px;
     color:#222;
-}
-
-.top .info:hover {
-    background:#ccc;
-}
-
-.top .buttons {
-    margin-left:28px;
-    height:40px;
-    border-left:1px solid #ddd;
-}
-
-.top button.icon-github:after {
-    font-size:11px;
-    margin-left:5px;
-    content:attr(title);
-    font-family: 'Open Sans', sans-serif;
-}
-
-.buttons-joined button {
-    border-right:0;
-}
-
-.buttons-joined button:first-child {
-    border-radius:3px 0 0 3px;
-}
-
-.buttons-joined button:last-child {
-    border-radius:0 3px 3px 0;
-    border-right:1px solid #f0f0f0;
-}
-
-button.delete-invert {
-    color:#882255;
-}
-
-.clear-buttons button {
-    background:transparent;
-    padding:0;
-    margin:0;
-    border:0;
-    opacity:0.6;
-}
-
-.clear-buttons button:hover {
-    opacity:1;
-    border:0;
-}
-
-button {
-    font-family: 'Open Sans', sans-serif;
-    cursor:pointer;
-    background:#fff;
-    font:inherit;
-    margin:0;
-    border:0;
-    padding:5px 10px;
-    box-sizing:border-box;
-    border:1px solid #ccc;
-    transition:all 100ms ease-in-out;
-    -webkit-transition:all 100ms ease-in-out;
-    border-bottom:1px solid #ccc;
-}
-
-button span {
-    font-family: 'Open Sans', sans-serif;
-}
-
-button:hover {
-    border:1px solid red;
-}
-
-button.major {
-    font-size: large;
-    border: 1px solid #aaa;
-    border-bottom: 2px solid #aaa;
-    padding: 10px;
-}
-
-button.major:hover {
-    border-bottom:2px solid red;
-}
-
-button.semimajor {
-    font-size: 15px;
-    border: 1px solid #aaa;
-    border-bottom: 2px solid #aaa;
-    padding: 10px;
-}
-
-button.semimajor:hover {
-    border-bottom:2px solid red;
-}
-
-/* http://www.mollietaylor.com/2012/10/color-blindness-and-palette-choice.html */
-button.positive {
-    background:#a6d854;
 }
 
 .top .collapse-button {
@@ -417,72 +259,6 @@ textarea.full-width {
     font:inherit;
 }
 
-/* ui rework */
-.file-bar {
-    background:#f7f7f7;
-    position:absolute;
-    top:0;
-    left:0;
-    height:40px;
-    right:40%;
-    border-bottom: 1px solid #d9d9d9;
-    border-color: rgba(102,102,102,0.25);
-    box-sizing:border-box;
-    line-height:40px;
-}
-
-.file-bar .name {
-    padding:0 10px;
-    display:inline-block;
-}
-
-.file-bar .name .filename {
-    margin-left:10px;
-}
-
-.file-bar .icon-external-link {
-    margin-left:10px;
-    font-size:15px;
-    color:#444;
-    transition:all 100ms ease-in;
-}
-
-.file-bar .icon-external-link:hover {
-    color:red;
-}
-
-.button-wrap {
-    padding:5px 0;
-    display:inline-block;
-    vertical-align:top;
-    margin-right:10px;
-}
-
-.button-wrap button {
-    vertical-align:top;
-    line-height:28px;
-    font-size:12px;
-    padding:0px 10px;
-    border-right:none;
-}
-
-.button-wrap button .icon {
-    margin-right:5px;
-}
-
-.button-wrap button:last-child {
-    border-right:1px solid #ccc;
-    border-radius:0 5px 5px 0;
-}
-
-.button-wrap button:first-child {
-    border-radius:5px 0 0 5px;
-}
-
-.import-sources {
-    border-bottom:1px solid #ccc;
-}
-
 .clickable:hover,
 .clickable.active {
     background:#eee;
@@ -494,15 +270,6 @@ textarea.full-width {
 
 .clickable {
     cursor:pointer;
-}
-
-.subpane {
-    position:absolute;
-    left:0;
-    right:0;
-    top:40px;
-    bottom:0;
-    overflow:auto;
 }
 
 /* modal, flash */
@@ -538,19 +305,4 @@ textarea.full-width {
 
 .logged-in {
     width:40px;
-}
-
-@media screen and (max-width:1100px) {
-    .file-bar .button-wrap button span.title {
-        display:none;
-    }
-    .left-panel, #map {
-        right:50%;
-    }
-    .right {
-        width:50%;
-    }
-    .file-bar {
-        right:50%;
-    }
 }

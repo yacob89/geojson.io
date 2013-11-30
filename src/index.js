@@ -133,7 +133,7 @@ function buttonClick(d) {
 }
 
 container.append('div')
-    .attr('class', 'file-bar')
+    .attr('class', 'margin3 col6 fill-white pin-top')
     .call(fileBar(updates)
         .on('source', clickSource)
         .on('save', saveChanges)
@@ -142,7 +142,7 @@ container.append('div')
 
 function clickSource() {
     if (d3.event) d3.event.preventDefault();
-    d3.select('.left-panel').call(sourcePanel(updates));
+    d3.select('.bottom-drawer').call(sourcePanel(updates));
 }
 
 function downloadFile() {
