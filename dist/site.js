@@ -4042,53 +4042,11 @@ function setupMap(container) {
     var mapDiv = container.append('div')
         .attr('id', 'map');
 
-    var map = L.mapbox.map(mapDiv.node(), null, {
+    var map = L.mapbox.map(mapDiv.node(), 'tmcw.map-7s15q36b', {
         infoControl: {
             position: 'bottomright'
         }
     }).setView([20, 0], 2);
-
-    var layers = [{
-        title: 'MapBox',
-        layer: L.mapbox.tileLayer('tmcw.map-7s15q36b', {
-            retinaVersion: 'tmcw.map-u4ca5hnt',
-            detectRetina: true
-        })
-    }, {
-        title: 'Satellite',
-        layer: L.mapbox.tileLayer('tmcw.map-j5fsp01s', {
-            retinaVersion: 'tmcw.map-ujx9se0r',
-            detectRetina: true
-        })
-    }, {
-        title: 'OSM',
-        layer: L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        })
-    }];
-
-    var layerButtons = container.append('div')
-        .attr('id', 'layer-switch')
-        .selectAll('button')
-        .data(layers)
-        .enter()
-        .append('button')
-        .on('click', function(d) {
-            var clicked = this;
-            layerButtons.classed('active', function() {
-                return clicked === this;
-            });
-            layers.forEach(swap);
-            function swap(l) {
-                if (l.layer == d.layer) map.addLayer(d.layer);
-                else if (map.hasLayer(l.layer)) map.removeLayer(l.layer);
-            }
-        })
-        .text(function(d) { return d.title; });
-
-    layerButtons.filter(function(d, i) { return i === 0; }).trigger('click');
-
-    L.mapbox.geocoderControl('tmcw.map-u4ca5hnt').addTo(map);
 
     return map;
 }
@@ -4564,7 +4522,7 @@ function sourcePanel(updates) {
             .attr('href', '#')
             .attr('class', 'col4')
             .attr('title', function(d) { return d.alt; })
-            .text(function(d) {return d.title; })
+            .text(function(d) { return d.title; })
             .on('click', clickSource);
 
         function clickSource(d) {

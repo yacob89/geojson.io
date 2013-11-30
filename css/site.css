@@ -221,22 +221,6 @@ body.dragover .modal-message {
     text-align:center;
 }
 
-#layer-switch {
-    position:absolute;
-    bottom:10px;
-    font-size:small;
-    left:10px;
-}
-
-#layer-switch button {
-    opacity:0.5;
-}
-
-#layer-switch button.active {
-    opacity:1;
-    background:#f7f7f7;
-}
-
 .fail {
     font-size:11px;
     padding:5px;
