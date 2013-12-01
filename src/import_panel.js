@@ -139,8 +139,7 @@ function importPanel(container, updates) {
     container.html('');
 
     var wrap = container
-        .append('div')
-        .attr('class', 'pad1');
+        .append('div');
 
     wrap.append('div')
         .attr('class', 'modal-message')
@@ -148,21 +147,22 @@ function importPanel(container, updates) {
 
     if (importSupport) {
 
-        var import_landing = wrap.append('div')
-            .attr('class', 'pad fillL');
+        var import_landing = wrap.append('div');
 
         var message = import_landing
             .append('div')
-            .attr('class', 'center');
+            .attr('class', 'center clearfix margin3 col6');
 
-        var button = message.append('button')
+        var link = message.append('a')
+            .text('Import')
+            .attr('href', '#')
+            .attr('class', 'button space-bottom col4 margin4 margin4r icon plus')
             .on('click', function() {
+                d3.event.preventDefault();
                 fileInput.node().click();
             });
-        button.append('span').attr('class', 'icon-arrow-down');
-        button.append('span').text(' Import');
         message.append('p')
-            .attr('class', 'deemphasize')
+            .attr('class', 'quiet')
             .append('small')
             .text('GeoJSON, TopoJSON, KML, CSV, GPX supported. You can also drag & drop files.');
         var fileInput = message
@@ -181,21 +181,16 @@ function importPanel(container, updates) {
                   'your browser isn\'t compatible. Please use Google Chrome, Safari 6, IE10, Firefox, or Opera for an optimal experience.');
     }
 
-    wrap.append('p')
-        .attr('class', 'intro center deemphasize')
-        .html('This is an open source project. <a target="_blank" href="http://tmcw.wufoo.com/forms/z7x4m1/">Submit feedback or get help</a>, and <a target="_blank" href="http://github.com/mapbox/geojson.io"><span class="icon-github"></span> fork on GitHub</a>');
-
-    wrap.append('div')
-        .attr('class', 'pad1');
+    wrap.append('div');
 }
 
 function handleGeocode(container, text, updates) {
 
     var list = csv2geojson.auto(text);
 
-    var button = container.append('div')
+    var link = container.append('div')
         .attr('class', 'bucket-actions')
-        .append('button')
+        .append('link')
         .attr('class', 'major')
         .attr('disabled', true)
         .text('At least one field required to geocode');
@@ -251,16 +246,16 @@ function handleGeocode(container, text, updates) {
     function onChosen(fields) {
          if (ti) window.clearInterval(ti);
          if (fields.length) {
-             button.attr('disabled', null)
+             link.attr('disabled', null)
                 .text('Geocode');
-             button.on('click', function() {
+             link.on('click', function() {
                  runGeocode(container, list, transformRow(fields), updates);
              });
              var se = showExample(fields);
              se();
              ti = window.setInterval(se, 2000);
          } else {
-             button.attr('disabled', true)
+             link.attr('disabled', true)
                 .text('At least one field required to geocode');
              example.text('');
          }
@@ -270,11 +265,10 @@ function handleGeocode(container, text, updates) {
 function runGeocode(container, list, transform, updates) {
     container.html('');
 
-    var wrap = container.append('div').attr('class', 'pad1');
+    var wrap = container.append('div');
 
     var doneBtn = wrap.append('div')
-        .attr('class', 'pad1 center')
-        .append('button')
+        .append('link')
         .attr('class', 'major')
         .text('Close')
         .on('click', function() {

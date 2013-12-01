@@ -8,35 +8,37 @@ var verticalPanel = require('./vertical_panel'),
 module.exports = sourcePanel;
 
 function sourcePanel(updates) {
-
     function panel(selection) {
-
-        if (!selection.classed('active')) return hidePanel();
+        selection
+            .html('')
+            .classed('active', true);
 
         var sources = [
             {
                 title: 'Import',
                 alt: 'CSV, KML, GPX, and other filetypes',
-                icon: 'icon-cog',
                 action: clickImport
             },
             {
                 title: 'GitHub',
                 alt: 'GeoJSON files in GitHub Repositories',
-                icon: 'icon-github',
                 action: clickGitHub
             },
             {
                 title: 'Gist',
                 alt: 'GeoJSON files in GitHub Gists',
-                icon: 'icon-github-alt',
                 action: clickGist
             }
         ];
 
-        selection
-            .html('')
-            .classed('active', false);
+        selection.append('a')
+            .attr('class', 'big quiet icon close pin-right')
+            .attr('href', '#')
+            .on('click', function() {
+                d3.event.preventDefault();
+                d3.select('.nav-bar').classed('active', true);
+                d3.select('.module.active').classed('active', false);
+            });
 
         var $top = selection
             .append('div')
@@ -62,20 +64,6 @@ function sourcePanel(updates) {
             d.action.apply(this, d);
         }
 
-        $top.append('div')
-            .attr('class', 'col2')
-            .append('div')
-            .attr('class', 'pad1 center clickable')
-            .on('click', hidePanel)
-            .append('span')
-            .attr('class', function(d) {
-                return 'icon-remove';
-            });
-
-        function hidePanel(d) {
-            selection.classed('active', true);
-        }
-
         var $subpane = selection.append('div')
             .attr('class', 'subpane');
 
@@ -91,7 +79,6 @@ function sourcePanel(updates) {
             function gitHubChosen(d) {
                 var hash = github.urlHash(d);
                 location.hash = hash.url;
-                hidePanel();
             }
         }
 
@@ -104,7 +91,6 @@ function sourcePanel(updates) {
             function gitHubChosen(d) {
                 var hash = github.urlHash(d);
                 location.hash = hash.url;
-                hidePanel();
             }
         }
 
@@ -120,7 +106,6 @@ function sourcePanel(updates) {
             function gistChosen(d) {
                 var hash = gist.urlHash(d);
                 location.hash = hash.url;
-                hidePanel();
             }
         }
 

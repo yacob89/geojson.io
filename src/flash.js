@@ -1,20 +1,18 @@
 var message = require('./message');
 
-module.exports = flash;
-
-function flash(selection, txt) {
+function flash(txt) {
     'use strict';
 
-    var msg = message(selection);
+    var $flash = d3.select('#flash');
+    var msg = message($flash);
 
     if (txt) msg.select('.content').html(txt);
 
     setTimeout(function() {
-        msg
-            .transition()
-            .style('opacity', 0)
-            .remove();
+        $flash.classed('active', false);
     }, 5000);
 
     return msg;
 }
+
+module.exports = flash;

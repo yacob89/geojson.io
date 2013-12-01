@@ -3013,7 +3013,7 @@ function commit(container, contents, callback) {
     container.select('.share').remove();
 
     var wrap = container.append('div')
-        .attr('class', 'share pad1 center');
+        .attr('class', 'share center');
 
     var form = wrap.append('form')
         .on('submit', function() {
@@ -3053,21 +3053,14 @@ module.exports = function(hostname) {
 },{}],30:[function(require,module,exports){
 var share = require('./share');
 
-module.exports = fileBar;
-
 function fileBar(updates) {
-
-    var event = d3.dispatch('source', 'save', 'share', 'download', 'share');
+    var event = d3.dispatch('source', 'save', 'share');
 
     function bar(selection) {
-
         updates.on('sourcechange', onSource);
 
         var name = selection.append('div')
-            .attr('class', 'name');
-
-        var filetype = name.append('span')
-            .attr('class', 'icon-file-alt');
+            .attr('class', 'col8 center pad1 small space strong quiet');
 
         var filename = name.append('span')
             .attr('class', 'filename')
@@ -3075,59 +3068,51 @@ function fileBar(updates) {
 
         var link = name.append('a')
             .attr('target', '_blank')
-            .attr('class', 'icon-external-link')
-            .classed('active', true);
+            .attr('class', 'icon share')
+            .attr('href', '#')
+            .classed('active', true)
+            .on('click', function() {
+                d3.event.preventDefault();
+                activeDrawer();
+                event.share();
+            });
 
         var actions = [
             {
                 title: 'Save',
-                icon: 'icon-save',
+                klass: 'col6 floppy keyline-right',
                 action: function() {
                     event.save();
                 }
             },
             {
                 title: 'Add',
-                icon: 'plus',
+                klass: 'plus col6',
                 action: function() {
+                    d3.event.preventDefault();
                     event.source();
-                }
-            },
-            {
-                title: 'Download',
-                icon: 'icon-download',
-                action: function() {
-                    event.download();
-                }
-            },
-            {
-                title: 'Share',
-                icon: 'icon-share-alt',
-                action: function() {
-                    event.share();
                 }
             }
         ];
 
-        var buttons = selection.append('div')
-            .attr('class', 'button-wrap fr')
+        var nav = selection.append('div')
+            .attr('class', 'col4 row1')
             .selectAll('button')
             .data(actions)
             .enter()
-            .append('button')
+            .append('a')
+            .attr('href', '#')
+            .attr('class', function(d) { return d.klass + ' icon button unround'; })
+            .text(function(d) { return d.title; })
             .on('click', function(d) {
+                d3.event.preventDefault();
+                if (d.title !== 'Save') activeDrawer();
                 d.action.apply(this, d);
             });
 
-        buttons.append('span')
-            .attr('class', function(d) {
-                return d.icon + ' icon';
-            });
-
-        buttons.append('span')
-            .text(function(d) {
-                return d.title;
-            });
+        function activeDrawer() {
+            d3.select('.nav-bar').classed('active', false);
+        }
 
         function sourceUrl(d) {
             switch(d.type) {
@@ -3139,55 +3124,44 @@ function fileBar(updates) {
         }
 
         function saveNoun(_) {
-            buttons.filter(function(b) {
+            nav.filter(function(b) {
                 return b.title === 'Save';
             }).select('span.title').text(_);
         }
 
         function onSource(d) {
             filename.text(d.name);
-            filetype.attr('class', function() {
-                if (d.type == 'github') return 'icon-github';
-                if (d.type == 'gist') return 'icon-github-alt';
-            });
+            saveNoun(d.type === 'github' ? 'Commit' : 'Save');
 
-            saveNoun(d.type == 'github' ? 'Commit' : 'Save');
-
-            if (sourceUrl(d)) {
-                link
-                    .attr('href', sourceUrl(d))
-                    .classed('active', false);
-            } else {
-                link
-                    .classed('active', true);
-            }
+            // TODO Revise the url in the attribution
+            // if (sourceUrl(d)) sourceUrl(d)
         }
     }
 
     return d3.rebind(bar, event, 'on');
 }
 
+module.exports = fileBar;
+
 },{"./share":40}],31:[function(require,module,exports){
 var message = require('./message');
 
-module.exports = flash;
-
-function flash(selection, txt) {
+function flash(txt) {
     'use strict';
 
-    var msg = message(selection);
+    var $flash = d3.select('#flash');
+    var msg = message($flash);
 
     if (txt) msg.select('.content').html(txt);
 
     setTimeout(function() {
-        msg
-            .transition()
-            .style('opacity', 0)
-            .remove();
+        $flash.classed('active', false);
     }, 5000);
 
     return msg;
 }
+
+module.exports = flash;
 
 },{"./message":38}],32:[function(require,module,exports){
 var verticalPanel = require('./vertical_panel'),
@@ -3331,8 +3305,7 @@ function importPanel(container, updates) {
     container.html('');
 
     var wrap = container
-        .append('div')
-        .attr('class', 'pad1');
+        .append('div');
 
     wrap.append('div')
         .attr('class', 'modal-message')
@@ -3340,21 +3313,22 @@ function importPanel(container, updates) {
 
     if (importSupport) {
 
-        var import_landing = wrap.append('div')
-            .attr('class', 'pad fillL');
+        var import_landing = wrap.append('div');
 
         var message = import_landing
             .append('div')
-            .attr('class', 'center');
+            .attr('class', 'center clearfix margin3 col6');
 
-        var button = message.append('button')
+        var link = message.append('a')
+            .text('Import')
+            .attr('href', '#')
+            .attr('class', 'button space-bottom col4 margin4 margin4r icon plus')
             .on('click', function() {
+                d3.event.preventDefault();
                 fileInput.node().click();
             });
-        button.append('span').attr('class', 'icon-arrow-down');
-        button.append('span').text(' Import');
         message.append('p')
-            .attr('class', 'deemphasize')
+            .attr('class', 'quiet')
             .append('small')
             .text('GeoJSON, TopoJSON, KML, CSV, GPX supported. You can also drag & drop files.');
         var fileInput = message
@@ -3373,21 +3347,16 @@ function importPanel(container, updates) {
                   'your browser isn\'t compatible. Please use Google Chrome, Safari 6, IE10, Firefox, or Opera for an optimal experience.');
     }
 
-    wrap.append('p')
-        .attr('class', 'intro center deemphasize')
-        .html('This is an open source project. <a target="_blank" href="http://tmcw.wufoo.com/forms/z7x4m1/">Submit feedback or get help</a>, and <a target="_blank" href="http://github.com/mapbox/geojson.io"><span class="icon-github"></span> fork on GitHub</a>');
-
-    wrap.append('div')
-        .attr('class', 'pad1');
+    wrap.append('div');
 }
 
 function handleGeocode(container, text, updates) {
 
     var list = csv2geojson.auto(text);
 
-    var button = container.append('div')
+    var link = container.append('div')
         .attr('class', 'bucket-actions')
-        .append('button')
+        .append('link')
         .attr('class', 'major')
         .attr('disabled', true)
         .text('At least one field required to geocode');
@@ -3443,16 +3412,16 @@ function handleGeocode(container, text, updates) {
     function onChosen(fields) {
          if (ti) window.clearInterval(ti);
          if (fields.length) {
-             button.attr('disabled', null)
+             link.attr('disabled', null)
                 .text('Geocode');
-             button.on('click', function() {
+             link.on('click', function() {
                  runGeocode(container, list, transformRow(fields), updates);
              });
              var se = showExample(fields);
              se();
              ti = window.setInterval(se, 2000);
          } else {
-             button.attr('disabled', true)
+             link.attr('disabled', true)
                 .text('At least one field required to geocode');
              example.text('');
          }
@@ -3462,11 +3431,10 @@ function handleGeocode(container, text, updates) {
 function runGeocode(container, list, transform, updates) {
     container.html('');
 
-    var wrap = container.append('div').attr('class', 'pad1');
+    var wrap = container.append('div');
 
     var doneBtn = wrap.append('div')
-        .attr('class', 'pad1 center')
-        .append('button')
+        .append('link')
         .attr('class', 'major')
         .text('Close')
         .on('click', function() {
@@ -3585,8 +3553,6 @@ map.on('draw:edited', updateFromMap)
     .on('draw:created', updateFromMap)
     .on('popupopen', onPopupOpen);
 
-d3.select('.collapse-button').on('click', clickCollapse);
-
 var updates = d3.dispatch('update_geojson', 'update_map', 'update_editor', 'update_refresh',
     'focus_layer', 'zoom_extent', 'sourcechange');
 
@@ -3648,43 +3614,19 @@ function buttonClick(d) {
 }
 
 container.append('div')
-    .attr('class', 'margin3 col6 fill-white pin-top')
+    .attr('class', 'margin3 col6 nav-bar fill-white animate offcanvas-top pin-top active')
     .call(fileBar(updates)
         .on('source', clickSource)
         .on('save', saveChanges)
-        .on('download', downloadFile)
         .on('share', shareMap));
 
 function clickSource() {
     if (d3.event) d3.event.preventDefault();
-    d3.select('.bottom-drawer').call(sourcePanel(updates));
-}
-
-function downloadFile() {
-    var features = featuresFromMap();
-
-    var content = JSON.stringify({
-        type: 'FeatureCollection',
-        features: features
-    }, null, 4);
-
-    if (content) {
-        saveAs(new Blob([content], {
-            type: 'text/plain;charset=utf-8'
-        }), 'map.geojson');
-    }
+    d3.select('#add').call(sourcePanel(updates));
 }
 
 function shareMap() {
     share(container, featuresFromMap());
-}
-
-function clickCollapse() {
-    d3.select('.right').classed('hidden',
-        !d3.select('.right').classed('hidden'));
-    d3.select('#map').classed('fullsize',
-        !d3.select('#map').classed('fullsize'));
-    map.invalidateSize();
 }
 
 function focusLayer(layer) {
@@ -3758,7 +3700,13 @@ function onPopupOpen(e) {
 d3.select(document).call(
     d3.keybinding('global')
         .on('⌘+s', saveChanges)
-        .on('⌘+o', clickSource));
+        .on('⌘+o', clickSource)
+        .on('esc', closeModules));
+
+function closeModules() {
+    d3.select('.nav-bar').classed('active', true);
+    d3.select('.module.active').classed('active', false);
+}
 
 function saveChanges() {
     if (d3.event) d3.event.preventDefault();
@@ -3766,7 +3714,7 @@ function saveChanges() {
     var features = featuresFromMap();
 
     if (!features.length) {
-        return flash(container, 'Add a feature to the map to save it');
+        return flash('Add a feature to the map to save it');
     }
 
     var content = JSON.stringify({
@@ -3776,18 +3724,17 @@ function saveChanges() {
 
     if (!source() || source().type == 'gist') {
         gist.saveAsGist(content, function(err, resp) {
-            if (err) return flash(container, err.toString());
+            if (err) return flash(err.toString());
             var id = resp.id;
             window.location.hash = gist.urlHash(resp).url;
-            flash(container,
-                'Changes to this map saved to Gist: <a href="' + resp.html_url +
+            flash('Changes to this map saved to Gist: <a href="' + resp.html_url +
                 '">' + resp.html_url + '</a>');
         });
     } else if (!source() || source().type == 'github') {
         var wrap = commit(container, content, function(err, resp) {
             wrap.remove();
-            if (err) return flash(container, err.toString());
-            else flash(container, 'Changes committed to GitHub: <a href="' +
+            if (err) return flash(err.toString());
+            else flash('Changes committed to GitHub: <a href="' +
                        resp.commit.html_url + '">' + resp.commit.sha.substring(0, 10) + '</a>');
 
         });
@@ -3854,7 +3801,7 @@ function hashChange() {
     if (s.type == 'github') github.loadGitHubRaw(s.id, onGitHubLoad);
 
     function onGistLoad(err, json) {
-        if (err) return flash(container, 'Gist API limit exceeded, come back in a bit.');
+        if (err) return flash('Gist API limit exceeded, come back in a bit.');
         var first = !drawnItems.getBounds().isValid();
 
         try {
@@ -3873,12 +3820,12 @@ function hashChange() {
             });
         } catch(e) {
             console.log(e);
-            flash(container, 'Invalid GeoJSON data in this Gist');
+            flash('Invalid GeoJSON data in this Gist');
         }
     }
 
     function onGitHubLoad(err, file) {
-        if (err) return flash(container, 'GitHub API limit exceeded, come back in a bit.');
+        if (err) return flash('GitHub API limit exceeded, come back in a bit.');
 
         try {
             var json = JSON.parse(file);
@@ -3896,7 +3843,7 @@ function hashChange() {
                 data: source()
             });
         } catch(e) {
-            flash(container, 'Loading a file from GitHub failed');
+            flash('Loading a file from GitHub failed');
         }
     }
 }
@@ -4048,6 +3995,7 @@ function setupMap(container) {
         }
     }).setView([20, 0], 2);
 
+    map.infoControl.addInfo('<a href="http://geojson.io/about.html" target="_blank">About geojson.io</a>');
     return map;
 }
 
@@ -4088,45 +4036,28 @@ function geoify(layer) {
 }
 
 },{}],38:[function(require,module,exports){
-module.exports = message;
-
 function message(selection) {
     'use strict';
 
-    selection.select('div.message').remove();
+    selection
+        .html('')
+        .classed('active', true);
 
-    var sel = selection.append('div')
-        .attr('class', 'message pad1');
-
-    sel.append('a')
-        .attr('class', 'icon-remove fr')
+    selection.append('a')
+        .attr('href', '#')
+        .attr('class', 'icon x pin-right quiet pad1')
         .on('click', function() {
-            sel.remove();
+            d3.event.preventDefault();
+            selection.classed('active', false);
         });
 
-    sel.append('div')
-        .attr('class', 'content');
+    selection.append('div')
+        .attr('class', 'content pad1 small strong quiet');
 
-    sel
-        .style('opacity', 0)
-        .transition()
-        .duration(200)
-        .style('opacity', 1);
-
-    sel.close = function() {
-        sel
-            .transition()
-            .duration(200)
-            .style('opacity', 0)
-            .remove();
-        sel
-            .transition()
-            .duration(200)
-            .style('top', '0px');
-    };
-
-    return sel;
+    return selection;
 }
+
+module.exports = message;
 
 },{}],"topojson":[function(require,module,exports){
 module.exports=require('L9/2mq');
@@ -4148,55 +4079,102 @@ function emailUrl(_) {
         '&body=Here\'s the link: ' + encodeURIComponent(_);
 }
 
+function downloadGeoJSON(features) {
+    var content = JSON.stringify({
+        type: 'FeatureCollection',
+        features: features
+    }, null, 4);
+
+    if (content) {
+        saveAs(new Blob([content], {
+            type: 'text/plain;charset=utf-8'
+        }), 'map.geojson');
+    }
+}
+
 function share(container, features) {
     'use strict';
-    container.select('.share').remove();
+    var container = d3.select('#share');
+    container
+        .html('')
+        .classed('active', true);
 
-    var selection = container.append('div')
-        .attr('class', 'share pad1');
+    var selection = container
+        .append('div')
+        .attr('class', 'col6 margin3 pad4y clearfix');
 
     var networks = [
         {
-            icon: 'icon-facebook',
-            title: 'Facebook',
-            url: facebookUrl(location.href)
-        },
-        {
-            icon: 'icon-twitter',
             title: 'Twitter',
+            klass: 'twitter col4',
             url: twitterUrl(location.href)
         },
         {
-            icon: 'icon-envelope-alt',
+            title: 'Facebook',
+            klass: 'facebook col4',
+            url: facebookUrl(location.href)
+        },
+        {
             title: 'Email',
+            klass: 'mail col4',
             url: emailUrl(location.href)
         }
     ];
 
-    var links = selection
+    var shareLinks = selection
+        .append('div')
+        .attr('class', 'clearfix pill col8 space-bottom');
+
+    shareLinks
         .selectAll('.network')
         .data(networks)
         .enter()
         .append('a')
         .attr('target', '_blank')
-        .attr('class', 'network')
-        .attr('href', function(d) { return d.url; });
-
-    links.append('span')
-        .attr('class', function(d) { return d.icon + ' pre-icon'; });
-
-    links.append('span')
+        .attr('class', function(d) { return d.klass + ' icon button'; })
+        .attr('href', function(d) { return d.url; })
         .text(function(d) { return d.title; });
 
-    var embed_html = selection
+    var download = selection
+        .append('a')
+        .attr('href', '#')
+        .attr('class', 'icon down button loud col3 margin1')
+        .text('Download')
+        .on('click', function() {
+            d3.event.preventDefault();
+            downloadGeoJSON(features);
+        });
+
+    var fieldset = selection
+        .append('fieldset')
+        .attr('class', 'with-icon col8');
+
+    fieldset
+        .append('span')
+        .attr('class', 'icon share');
+
+    var embed_html = fieldset
         .append('input')
         .attr('type', 'text')
-        .attr('title', 'Embed HTML');
+        .attr('readonly', true)
+        .attr('class', 'col12')
+        .attr('placeholder', 'Embed HTML')
+        .on('click', function() {
+            this.select();
+        });
+
+    fieldset
+        .append('p')
+        .text('Use the URL to embed the map on an HTML page.')
+        .attr('class', 'pad1y small')
 
     selection.append('a')
-        .attr('class', 'icon-remove')
+        .attr('class', 'big quiet icon close pin-right')
+        .attr('href', '#')
         .on('click', function() {
-            selection.remove();
+            d3.event.preventDefault();
+            d3.select('.nav-bar').classed('active', true);
+            d3.select('.active.module').classed('active', false);
         });
 
     gist.saveBlocks(JSON.stringify({
@@ -4206,9 +4184,8 @@ function share(container, features) {
         if (err) return;
         if (res) {
             embed_html.property('value',
-                '<iframe frameborder="0" width="100%" height="300" ' + 
+                '<iframe frameborder="0" width="100%" height="300" ' +
                 'src="http://bl.ocks.org/d/' + res.id + '"></iframe>');
-            embed_html.node().select();
         }
     });
 }
@@ -4253,7 +4230,7 @@ module.exports = function source() {
 },{}],42:[function(require,module,exports){
 var source = require('../source.js');
 var fs = require('fs');
-var tmpl = "<!DOCTYPE html>\n<html>\n<head>\n  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />\n  <style>\n    body { margin:0; padding:0; }\n    #map { position:absolute; top:0; bottom:0; width:100%; }\n    .marker-properties {\n    border-collapse:collapse;\n    font-size:11px;\n    border:1px solid #eee;\n    margin:0;\n    }\n    .marker-properties th {\n    white-space:nowrap;\n    border:1px solid #eee;\n    padding:5px 10px;\n    }\n    .marker-properties td {\n    border:1px solid #eee;\n    padding:5px 10px;\n    }\n    .marker-properties tr:last-child td,\n    .marker-properties tr:last-child th {\n    border-bottom:none;\n    }\n    .marker-properties tr:nth-child(even) th,\n    .marker-properties tr:nth-child(even) td {\n    background-color:#f7f7f7;\n    }\n  </style>\n  <script src='//api.tiles.mapbox.com/mapbox.js/v1.5.0/mapbox.js'></script>\n  <script src=\"//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js\" ></script>\n  <link href='//api.tiles.mapbox.com/mapbox.js/v1.5.0/mapbox.css' rel='stylesheet' />\n</head>\n<body>\n<div id='map'></div>\n<script type='text/javascript'>\nvar map = L.mapbox.map('map');\n\nL.mapbox.tileLayer('tmcw.map-ajwqaq7t', {\n    retinaVersion: 'tmcw.map-u8vb5w83',\n    detectRetina: true\n}).addTo(map);\n\nmap.attributionControl.addAttribution('<a href=\"http://geojson.io/\">geojson.io</a>');\n$.getJSON('map.geojson', function(geojson) {\n    var geojsonLayer = L.geoJson(geojson).addTo(map);\n    map.fitBounds(geojsonLayer.getBounds());\n    geojsonLayer.eachLayer(function(l) {\n        showProperties(l);\n    });\n});\nfunction showProperties(l) {\n    var properties = l.toGeoJSON().properties, table = '';\n    for (var key in properties) {\n        table += '<tr><th>' + key + '</th>' +\n            '<td>' + properties[key] + '</td></tr>';\n    }\n    if (table) l.bindPopup('<table class=\"marker-properties display\">' + table + '</table>');\n}\n</script>\n</body>\n</html>\n";
+var tmpl = "<!DOCTYPE html>\n<html>\n<head>\n  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />\n  <style>\n    body { margin:0; padding:0; }\n    #map { position:absolute; top:0; bottom:0; width:100%; }\n    .marker-properties {\n      border-collapse:collapse;\n      font-size:11px;\n      border:1px solid #eee;\n      margin:0;\n      }\n    .marker-properties th {\n      white-space:nowrap;\n      border:1px solid #eee;\n      padding:5px 10px;\n      }\n    .marker-properties td {\n      border:1px solid #eee;\n      padding:5px 10px;\n      }\n    .marker-properties tr:last-child td,\n    .marker-properties tr:last-child th {\n      border-bottom:none;\n      }\n    .marker-properties tr:nth-child(even) th,\n    .marker-properties tr:nth-child(even) td {\n      background-color:#f7f7f7;\n      }\n  </style>\n  <script src='//api.tiles.mapbox.com/mapbox.js/v1.5.0/mapbox.js'></script>\n  <script src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js' ></script>\n  <link href='//api.tiles.mapbox.com/mapbox.js/v1.5.0/mapbox.css' rel='stylesheet' />\n</head>\n<body>\n<div id='map'></div>\n<script>\nvar map = L.mapbox.map('map');\n\nL.mapbox.tileLayer('tmcw.map-ajwqaq7t', {\n    retinaVersion: 'tmcw.map-u8vb5w83',\n    detectRetina: true\n}).addTo(map);\n\nmap.infoControl.addInfo('<a href=\"http://geojson.io/\">geojson.io</a>');\n$.getJSON('map.geojson', function(geojson) {\n    var geojsonLayer = L.geoJson(geojson).addTo(map);\n    map.fitBounds(geojsonLayer.getBounds());\n    geojsonLayer.eachLayer(function(l) {\n        showProperties(l);\n    });\n});\nfunction showProperties(l) {\n    var properties = l.toGeoJSON().properties, table = '';\n    for (var key in properties) {\n        table += '<tr><th>' + key + '</th>' +\n            '<td>' + properties[key] + '</td></tr>';\n    }\n    if (table) l.bindPopup('<table class=\"marker-properties display\">' + table + '</table>');\n}\n</script>\n</body>\n</html>\n";
 
 module.exports.saveAsGist = saveAsGist;
 module.exports.saveBlocks = saveBlocks;
@@ -4479,35 +4456,37 @@ var verticalPanel = require('./vertical_panel'),
 module.exports = sourcePanel;
 
 function sourcePanel(updates) {
-
     function panel(selection) {
-
-        if (!selection.classed('active')) return hidePanel();
+        selection
+            .html('')
+            .classed('active', true);
 
         var sources = [
             {
                 title: 'Import',
                 alt: 'CSV, KML, GPX, and other filetypes',
-                icon: 'icon-cog',
                 action: clickImport
             },
             {
                 title: 'GitHub',
                 alt: 'GeoJSON files in GitHub Repositories',
-                icon: 'icon-github',
                 action: clickGitHub
             },
             {
                 title: 'Gist',
                 alt: 'GeoJSON files in GitHub Gists',
-                icon: 'icon-github-alt',
                 action: clickGist
             }
         ];
 
-        selection
-            .html('')
-            .classed('active', false);
+        selection.append('a')
+            .attr('class', 'big quiet icon close pin-right')
+            .attr('href', '#')
+            .on('click', function() {
+                d3.event.preventDefault();
+                d3.select('.nav-bar').classed('active', true);
+                d3.select('.module.active').classed('active', false);
+            });
 
         var $top = selection
             .append('div')
@@ -4533,20 +4512,6 @@ function sourcePanel(updates) {
             d.action.apply(this, d);
         }
 
-        $top.append('div')
-            .attr('class', 'col2')
-            .append('div')
-            .attr('class', 'pad1 center clickable')
-            .on('click', hidePanel)
-            .append('span')
-            .attr('class', function(d) {
-                return 'icon-remove';
-            });
-
-        function hidePanel(d) {
-            selection.classed('active', true);
-        }
-
         var $subpane = selection.append('div')
             .attr('class', 'subpane');
 
@@ -4562,7 +4527,6 @@ function sourcePanel(updates) {
             function gitHubChosen(d) {
                 var hash = github.urlHash(d);
                 location.hash = hash.url;
-                hidePanel();
             }
         }
 
@@ -4575,7 +4539,6 @@ function sourcePanel(updates) {
             function gitHubChosen(d) {
                 var hash = github.urlHash(d);
                 location.hash = hash.url;
-                hidePanel();
             }
         }
 
@@ -4591,7 +4554,6 @@ function sourcePanel(updates) {
             function gistChosen(d) {
                 var hash = gist.urlHash(d);
                 location.hash = hash.url;
-                hidePanel();
             }
         }
 

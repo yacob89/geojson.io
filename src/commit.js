@@ -6,7 +6,7 @@ function commit(container, contents, callback) {
     container.select('.share').remove();
 
     var wrap = container.append('div')
-        .attr('class', 'share pad1 center');
+        .attr('class', 'share center');
 
     var form = wrap.append('form')
         .on('submit', function() {

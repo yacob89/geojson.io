@@ -70,8 +70,6 @@ map.on('draw:edited', updateFromMap)
     .on('draw:created', updateFromMap)
     .on('popupopen', onPopupOpen);
 
-d3.select('.collapse-button').on('click', clickCollapse);
-
 var updates = d3.dispatch('update_geojson', 'update_map', 'update_editor', 'update_refresh',
     'focus_layer', 'zoom_extent', 'sourcechange');
 
@@ -133,43 +131,19 @@ function buttonClick(d) {
 }
 
 container.append('div')
-    .attr('class', 'margin3 col6 fill-white pin-top')
+    .attr('class', 'margin3 col6 nav-bar fill-white animate offcanvas-top pin-top active')
     .call(fileBar(updates)
         .on('source', clickSource)
         .on('save', saveChanges)
-        .on('download', downloadFile)
         .on('share', shareMap));
 
 function clickSource() {
     if (d3.event) d3.event.preventDefault();
-    d3.select('.bottom-drawer').call(sourcePanel(updates));
-}
-
-function downloadFile() {
-    var features = featuresFromMap();
-
-    var content = JSON.stringify({
-        type: 'FeatureCollection',
-        features: features
-    }, null, 4);
-
-    if (content) {
-        saveAs(new Blob([content], {
-            type: 'text/plain;charset=utf-8'
-        }), 'map.geojson');
-    }
+    d3.select('#add').call(sourcePanel(updates));
 }
 
 function shareMap() {
     share(container, featuresFromMap());
-}
-
-function clickCollapse() {
-    d3.select('.right').classed('hidden',
-        !d3.select('.right').classed('hidden'));
-    d3.select('#map').classed('fullsize',
-        !d3.select('#map').classed('fullsize'));
-    map.invalidateSize();
 }
 
 function focusLayer(layer) {
@@ -243,7 +217,13 @@ function onPopupOpen(e) {
 d3.select(document).call(
     d3.keybinding('global')
         .on('⌘+s', saveChanges)
-        .on('⌘+o', clickSource));
+        .on('⌘+o', clickSource)
+        .on('esc', closeModules));
+
+function closeModules() {
+    d3.select('.nav-bar').classed('active', true);
+    d3.select('.module.active').classed('active', false);
+}
 
 function saveChanges() {
     if (d3.event) d3.event.preventDefault();
@@ -251,7 +231,7 @@ function saveChanges() {
     var features = featuresFromMap();
 
     if (!features.length) {
-        return flash(container, 'Add a feature to the map to save it');
+        return flash('Add a feature to the map to save it');
     }
 
     var content = JSON.stringify({
@@ -261,18 +241,17 @@ function saveChanges() {
 
     if (!source() || source().type == 'gist') {
         gist.saveAsGist(content, function(err, resp) {
-            if (err) return flash(container, err.toString());
+            if (err) return flash(err.toString());
             var id = resp.id;
             window.location.hash = gist.urlHash(resp).url;
-            flash(container,
-                'Changes to this map saved to Gist: <a href="' + resp.html_url +
+            flash('Changes to this map saved to Gist: <a href="' + resp.html_url +
                 '">' + resp.html_url + '</a>');
         });
     } else if (!source() || source().type == 'github') {
         var wrap = commit(container, content, function(err, resp) {
             wrap.remove();
-            if (err) return flash(container, err.toString());
-            else flash(container, 'Changes committed to GitHub: <a href="' +
+            if (err) return flash(err.toString());
+            else flash('Changes committed to GitHub: <a href="' +
                        resp.commit.html_url + '">' + resp.commit.sha.substring(0, 10) + '</a>');
 
         });
@@ -339,7 +318,7 @@ function hashChange() {
     if (s.type == 'github') github.loadGitHubRaw(s.id, onGitHubLoad);
 
     function onGistLoad(err, json) {
-        if (err) return flash(container, 'Gist API limit exceeded, come back in a bit.');
+        if (err) return flash('Gist API limit exceeded, come back in a bit.');
         var first = !drawnItems.getBounds().isValid();
 
         try {
@@ -358,12 +337,12 @@ function hashChange() {
             });
         } catch(e) {
             console.log(e);
-            flash(container, 'Invalid GeoJSON data in this Gist');
+            flash('Invalid GeoJSON data in this Gist');
         }
     }
 
     function onGitHubLoad(err, file) {
-        if (err) return flash(container, 'GitHub API limit exceeded, come back in a bit.');
+        if (err) return flash('GitHub API limit exceeded, come back in a bit.');
 
         try {
             var json = JSON.parse(file);
@@ -381,7 +360,7 @@ function hashChange() {
                 data: source()
             });
         } catch(e) {
-            flash(container, 'Loading a file from GitHub failed');
+            flash('Loading a file from GitHub failed');
         }
     }
 }

@@ -1,20 +1,13 @@
 var share = require('./share');
 
-module.exports = fileBar;
-
 function fileBar(updates) {
-
-    var event = d3.dispatch('source', 'save', 'share', 'download', 'share');
+    var event = d3.dispatch('source', 'save', 'share');
 
     function bar(selection) {
-
         updates.on('sourcechange', onSource);
 
         var name = selection.append('div')
-            .attr('class', 'name');
-
-        var filetype = name.append('span')
-            .attr('class', 'icon-file-alt');
+            .attr('class', 'col8 center pad1 small space strong quiet');
 
         var filename = name.append('span')
             .attr('class', 'filename')
@@ -22,59 +15,51 @@ function fileBar(updates) {
 
         var link = name.append('a')
             .attr('target', '_blank')
-            .attr('class', 'icon-external-link')
-            .classed('active', true);
+            .attr('class', 'icon share')
+            .attr('href', '#')
+            .classed('active', true)
+            .on('click', function() {
+                d3.event.preventDefault();
+                activeDrawer();
+                event.share();
+            });
 
         var actions = [
             {
                 title: 'Save',
-                icon: 'icon-save',
+                klass: 'col6 floppy keyline-right',
                 action: function() {
                     event.save();
                 }
             },
             {
                 title: 'Add',
-                icon: 'plus',
+                klass: 'plus col6',
                 action: function() {
+                    d3.event.preventDefault();
                     event.source();
-                }
-            },
-            {
-                title: 'Download',
-                icon: 'icon-download',
-                action: function() {
-                    event.download();
-                }
-            },
-            {
-                title: 'Share',
-                icon: 'icon-share-alt',
-                action: function() {
-                    event.share();
                 }
             }
         ];
 
-        var buttons = selection.append('div')
-            .attr('class', 'button-wrap fr')
+        var nav = selection.append('div')
+            .attr('class', 'col4 row1')
             .selectAll('button')
             .data(actions)
             .enter()
-            .append('button')
+            .append('a')
+            .attr('href', '#')
+            .attr('class', function(d) { return d.klass + ' icon button unround'; })
+            .text(function(d) { return d.title; })
             .on('click', function(d) {
+                d3.event.preventDefault();
+                if (d.title !== 'Save') activeDrawer();
                 d.action.apply(this, d);
             });
 
-        buttons.append('span')
-            .attr('class', function(d) {
-                return d.icon + ' icon';
-            });
-
-        buttons.append('span')
-            .text(function(d) {
-                return d.title;
-            });
+        function activeDrawer() {
+            d3.select('.nav-bar').classed('active', false);
+        }
 
         function sourceUrl(d) {
             switch(d.type) {
@@ -86,30 +71,21 @@ function fileBar(updates) {
         }
 
         function saveNoun(_) {
-            buttons.filter(function(b) {
+            nav.filter(function(b) {
                 return b.title === 'Save';
             }).select('span.title').text(_);
         }
 
         function onSource(d) {
             filename.text(d.name);
-            filetype.attr('class', function() {
-                if (d.type == 'github') return 'icon-github';
-                if (d.type == 'gist') return 'icon-github-alt';
-            });
+            saveNoun(d.type === 'github' ? 'Commit' : 'Save');
 
-            saveNoun(d.type == 'github' ? 'Commit' : 'Save');
-
-            if (sourceUrl(d)) {
-                link
-                    .attr('href', sourceUrl(d))
-                    .classed('active', false);
-            } else {
-                link
-                    .classed('active', true);
-            }
+            // TODO Revise the url in the attribution
+            // if (sourceUrl(d)) sourceUrl(d)
         }
     }
 
     return d3.rebind(bar, event, 'on');
 }
+
+module.exports = fileBar;

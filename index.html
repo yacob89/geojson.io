@@ -13,10 +13,7 @@
   <link href='lib/draw/leaflet.draw.css' rel='stylesheet' />
   <link href='lib/codemirror/lib/codemirror.css' rel='stylesheet' />
   <link href='lib/bucket.css' rel='stylesheet' />
-  <link href='css/marker.css' rel='stylesheet' />
-  <link href='css/github_browse.css' rel='stylesheet' />
-  <link href='css/site.css' rel='stylesheet' />
-  <link href='css/theme.css' rel='stylesheet' />
+  <link href='site.css' rel='stylesheet' />
   <link rel='icon' type='image/x-icon' href='/favicon.png' />
   <!--[if lt IE 9]><script src='lib/aight.min.js'></script><![endif]-->
   <script src='//d3nslu0hdya83q.cloudfront.net/dist/1.0/raven.min.js'></script>
@@ -31,18 +28,14 @@
   </script>
 </head>
 <body id='geojsonio-body'>
-<div class='module bottom-drawer fill-white animate pin-bottom offcanvas-bottom col12 row6 clearfix'></div>
-
-<div class='right'>
-    <div class='top'>
-        <button title='collapse' class='collapse-button'>
-            <span class='icon icon-caret-down'></span>
-        </button>
-        <div class='buttons'>
-        </div>
-    </div>
-    <div class='pane'></div>
+<div id='add' class='module fill-white animate pin-bottom offcanvas-bottom col12 row6 clearfix'></div>
+<div id='share' class='module fill-white animate pin-bottom offcanvas-bottom col12 row6 clearfix'></div>
+<div id='data' class='active module fill-white animate pin-bottom offcanvas-bottom col12 row6 clearfix'>
+  <div class='buttons'></div>
+  <div class='pane'></div>
 </div>
+<div id='flash' class='margin3 col6 center alert-bar fill-yellow animate offcanvas-top pin-top'></div>
+
 <script src='//api.tiles.mapbox.com/mapbox.js/v1.5.0/mapbox.js'></script>
 <script src='dist/lib.js'></script>
 <script src='dist/site.js'></script>

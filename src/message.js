@@ -1,39 +1,22 @@
-module.exports = message;
-
 function message(selection) {
     'use strict';
 
-    selection.select('div.message').remove();
+    selection
+        .html('')
+        .classed('active', true);
 
-    var sel = selection.append('div')
-        .attr('class', 'message pad1');
-
-    sel.append('a')
-        .attr('class', 'icon-remove fr')
+    selection.append('a')
+        .attr('href', '#')
+        .attr('class', 'icon x pin-right quiet pad1')
         .on('click', function() {
-            sel.remove();
+            d3.event.preventDefault();
+            selection.classed('active', false);
         });
 
-    sel.append('div')
-        .attr('class', 'content');
+    selection.append('div')
+        .attr('class', 'content pad1 small strong quiet');
 
-    sel
-        .style('opacity', 0)
-        .transition()
-        .duration(200)
-        .style('opacity', 1);
-
-    sel.close = function() {
-        sel
-            .transition()
-            .duration(200)
-            .style('opacity', 0)
-            .remove();
-        sel
-            .transition()
-            .duration(200)
-            .style('top', '0px');
-    };
-
-    return sel;
+    return selection;
 }
+
+module.exports = message;

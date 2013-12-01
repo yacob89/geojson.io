@@ -14,6 +14,7 @@ function setupMap(container) {
         }
     }).setView([20, 0], 2);
 
+    map.infoControl.addInfo('<a href="http://geojson.io/about.html" target="_blank">About geojson.io</a>');
     return map;
 }
 
