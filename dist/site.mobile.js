@@ -22799,7 +22799,7 @@ module.exports = function fileBar(context) {
         }];
 
         function activeDrawer() {
-            d3.select('.nav-bar').classed('active', false);
+            d3.select('.module.active').classed('active', false);
         }
 
         function sourceIcon(type) {
@@ -22830,8 +22830,7 @@ module.exports = function fileBar(context) {
             .on('click', function(d) {
                 d3.event.preventDefault();
 
-                // TODO Kill this line when the title is removed
-                if (d.title !== 'Save') activeDrawer();
+                activeDrawer();
                 d.action.apply(this, d);
             });
 
@@ -23030,7 +23029,7 @@ module.exports = function(context) {
 
         if (importSupport) {
             var button = sel.append('a')
-                .attr('href', '#') 
+                .attr('href', '#')
                 .attr('class', 'button icon plus col4 margin4 space-bottom')
                 .text('Import')
                 .on('click', function() {
