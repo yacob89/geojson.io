@@ -21491,7 +21491,7 @@ module.exports = function(context) {
     return data;
 };
 
-},{"../source/gist":117,"../source/github":118,"clone":8,"xtend":93}],101:[function(require,module,exports){
+},{"../source/gist":118,"../source/github":119,"clone":8,"xtend":93}],101:[function(require,module,exports){
 var qs = require('qs-hash'),
     zoomextent = require('../lib/zoomextent'),
     flash = require('../ui/flash');
@@ -21565,7 +21565,7 @@ module.exports = function(context) {
     };
 };
 
-},{"../lib/zoomextent":113,"../ui/flash":124,"qs-hash":23}],102:[function(require,module,exports){
+},{"../lib/zoomextent":114,"../ui/flash":124,"qs-hash":23}],102:[function(require,module,exports){
 var zoomextent = require('../lib/zoomextent'),
     qs = require('qs-hash');
 
@@ -21605,7 +21605,7 @@ module.exports = function(context) {
     }
 };
 
-},{"../lib/zoomextent":113,"qs-hash":23}],103:[function(require,module,exports){
+},{"../lib/zoomextent":114,"qs-hash":23}],103:[function(require,module,exports){
 var config = require('../config.js')(location.hostname);
 
 module.exports = function(context) {
@@ -21801,6 +21801,66 @@ module.exports = function(context) {
 };
 
 },{"../config.js":98}],106:[function(require,module,exports){
+var shpwrite = require('shp-write'),
+    clone = require('clone'),
+    topojson = require('topojson'),
+    saveAs = require('filesaver.js'),
+    tokml = require('tokml');
+
+module.exports.topo = topo;
+module.exports.geoJSON = geoJSON;
+module.exports.kml = kml;
+module.exports.shp = shp;
+
+function topo(context) {
+    var content = JSON.stringify(topojson.topology({
+        collection: clone(context.data.get('map'))
+    }, {'property-transform': allProperties}));
+
+    saveAs(new Blob([content], {
+        type: 'text/plain;charset=utf-8'
+    }), 'map.topojson');
+
+    analytics.track('download/topojson');
+}
+
+function geoJSON(context) {
+    if (d3.event) d3.event.preventDefault();
+    var content = JSON.stringify(context.data.get('map'));
+    var meta = context.data.get('meta');
+    saveAs(new Blob([content], {
+        type: 'text/plain;charset=utf-8'
+    }), (meta && meta.name) || 'map.geojson');
+    analytics.track('download/geojson');
+}
+
+function kml(context) {
+    if (d3.event) d3.event.preventDefault();
+    var content = tokml(context.data.get('map'));
+    var meta = context.data.get('meta');
+    saveAs(new Blob([content], {
+        type: 'text/plain;charset=utf-8'
+    }), 'map.kml');
+    analytics.track('download/kml');
+}
+
+function shp(context) {
+    if (d3.event) d3.event.preventDefault();
+    d3.select('.map').classed('loading', true);
+    try {
+        shpwrite.download(context.data.get('map'));
+    } finally {
+        d3.select('.map').classed('loading', false);
+    }
+    analytics.track('download/shp');
+}
+
+function allProperties(properties, key, value) {
+    properties[key] = value;
+    return true;
+}
+
+},{"clone":8,"filesaver.js":14,"shp-write":24,"tokml":63,"topojson":"L9/2mq"}],107:[function(require,module,exports){
 var ui = require('./ui'),
   map = require('./ui/map'),
   data = require('./core/data'),
@@ -21835,7 +21895,7 @@ function geojsonIO() {
   return context;
 }
 
-},{"./core/api":99,"./core/data":100,"./core/loader":101,"./core/recovery":102,"./core/repo":103,"./core/router":104,"./core/user":105,"./ui":119,"./ui/map":128,"store":58}],107:[function(require,module,exports){
+},{"./core/api":99,"./core/data":100,"./core/loader":101,"./core/recovery":102,"./core/repo":103,"./core/router":104,"./core/user":105,"./ui":120,"./ui/map":128,"store":58}],108:[function(require,module,exports){
 var qs = require('qs-hash');
 require('leaflet-hash');
 
@@ -21874,7 +21934,7 @@ L.Hash.prototype.formatHash = function(map) {
 	return "#" + qs.qsString(query);
 };
 
-},{"leaflet-hash":20,"qs-hash":23}],108:[function(require,module,exports){
+},{"leaflet-hash":20,"qs-hash":23}],109:[function(require,module,exports){
 module.exports = function(context) {
     return function(e) {
         var sel = d3.select(e.popup._contentNode);
@@ -21937,7 +21997,7 @@ module.exports = function(context) {
     };
 };
 
-},{}],109:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 module.exports = function(elem, w, h) {
     var c = elem.appendChild(document.createElement('canvas'));
 
@@ -21958,7 +22018,7 @@ module.exports = function(elem, w, h) {
     };
 };
 
-},{}],110:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 var topojson = require('topojson'),
     toGeoJSON = require('togeojson'),
     csv2geojson = require('csv2geojson'),
@@ -22140,7 +22200,7 @@ function readFile(f, text, callback) {
     }
 }
 
-},{"csv2geojson":9,"osmtogeojson":22,"togeojson":62,"topojson":"L9/2mq"}],111:[function(require,module,exports){
+},{"csv2geojson":9,"osmtogeojson":22,"togeojson":62,"topojson":"L9/2mq"}],112:[function(require,module,exports){
 module.exports = function(map, feature, bounds) {
     var zoomLevel;
 
@@ -22152,7 +22212,7 @@ module.exports = function(map, feature, bounds) {
     }
 };
 
-},{}],112:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 var geojsonhint = require('geojsonhint');
 
 module.exports = function(callback) {
@@ -22213,13 +22273,13 @@ module.exports = function(callback) {
     };
 };
 
-},{"geojsonhint":15}],113:[function(require,module,exports){
+},{"geojsonhint":15}],114:[function(require,module,exports){
 module.exports = function(context) {
     var bounds = context.mapLayer.getBounds();
     if (bounds.isValid()) context.map.fitBounds(bounds);
 };
 
-},{}],114:[function(require,module,exports){
+},{}],115:[function(require,module,exports){
 var fs = require('fs');
 
 module.exports = function(context) {
@@ -22238,7 +22298,7 @@ module.exports = function(context) {
     return render;
 };
 
-},{"fs":3}],115:[function(require,module,exports){
+},{"fs":3}],116:[function(require,module,exports){
 var validate = require('../lib/validate'),
     zoomextent = require('../lib/zoomextent'),
     saver = require('../ui/saver.js');
@@ -22301,7 +22361,7 @@ module.exports = function(context) {
     return render;
 };
 
-},{"../lib/validate":112,"../lib/zoomextent":113,"../ui/saver.js":131}],116:[function(require,module,exports){
+},{"../lib/validate":113,"../lib/zoomextent":114,"../ui/saver.js":131}],117:[function(require,module,exports){
 var metatable = require('d3-metatable')(d3),
     smartZoom = require('../lib/smartzoom.js');
 
@@ -22373,7 +22433,7 @@ module.exports = function(context) {
     return render;
 };
 
-},{"../lib/smartzoom.js":111,"d3-metatable":12}],117:[function(require,module,exports){
+},{"../lib/smartzoom.js":112,"d3-metatable":12}],118:[function(require,module,exports){
 var fs = require('fs'),
     tmpl = "<!DOCTYPE html>\n<html>\n<head>\n  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />\n  <style>\n    body { margin:0; padding:0; }\n    #map { position:absolute; top:0; bottom:0; width:100%; }\n    .marker-properties {\n      border-collapse:collapse;\n      font-size:11px;\n      border:1px solid #eee;\n      margin:0;\n      }\n    .marker-properties th {\n      white-space:nowrap;\n      border:1px solid #eee;\n      padding:5px 10px;\n      }\n    .marker-properties td {\n      border:1px solid #eee;\n      padding:5px 10px;\n      }\n    .marker-properties tr:last-child td,\n    .marker-properties tr:last-child th {\n      border-bottom:none;\n      }\n    .marker-properties tr:nth-child(even) th,\n    .marker-properties tr:nth-child(even) td {\n      background-color:#f7f7f7;\n      }\n  </style>\n  <script src='//api.tiles.mapbox.com/mapbox.js/v1.5.0/mapbox.js'></script>\n  <script src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js' ></script>\n  <link href='//api.tiles.mapbox.com/mapbox.js/v1.5.0/mapbox.css' rel='stylesheet' />\n</head>\n<body>\n<div id='map'></div>\n<script>\nvar map = L.mapbox.map('map');\n\nL.mapbox.tileLayer('tmcw.map-ajwqaq7t', {\n    retinaVersion: 'tmcw.map-u8vb5w83',\n    detectRetina: true\n}).addTo(map);\n\nmap.infoControl.addInfo('<a href=\"http://geojson.io/\">geojson.io</a>');\n$.getJSON('map.geojson', function(geojson) {\n    var geojsonLayer = L.geoJson(geojson).addTo(map);\n    map.fitBounds(geojsonLayer.getBounds());\n    geojsonLayer.eachLayer(function(l) {\n        showProperties(l);\n    });\n});\nfunction showProperties(l) {\n    var properties = l.toGeoJSON().properties, table = '';\n    for (var key in properties) {\n        table += '<tr><th>' + key + '</th>' +\n            '<td>' + properties[key] + '</td></tr>';\n    }\n    if (table) l.bindPopup('<table class=\"marker-properties display\">' + table + '</table>');\n}\n</script>\n</body>\n</html>\n";
 
@@ -22467,7 +22527,7 @@ function load(id, context, callback) {
     function onError(err) { callback(err, null); }
 }
 
-},{"fs":3}],118:[function(require,module,exports){
+},{"fs":3}],119:[function(require,module,exports){
 module.exports.save = save;
 module.exports.load = load;
 module.exports.loadRaw = loadRaw;
@@ -22574,7 +22634,7 @@ function fileUrl(parts) {
         '?ref=' + parts.branch;
 }
 
-},{}],119:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 var buttons = require('./ui/mode_buttons'),
     file_bar = require('./ui/file_bar'),
     dnd = require('./ui/dnd'),
@@ -22646,7 +22706,7 @@ function ui(context) {
 
         container
             .append('div')
-            .attr('class', 'col6 margin3 pin-top fill-white file-bar')
+            .attr('class', 'col6 margin3 pin-top fill-white nav-bar')
             .call(file_bar(context));
 
         dnd(context);
@@ -22659,7 +22719,7 @@ function ui(context) {
     };
 }
 
-},{"./ui/dnd":121,"./ui/file_bar":123,"./ui/layer_switch":127,"./ui/mode_buttons":130,"./ui/user":134}],120:[function(require,module,exports){
+},{"./ui/dnd":122,"./ui/file_bar":123,"./ui/layer_switch":127,"./ui/mode_buttons":130,"./ui/user":134}],121:[function(require,module,exports){
 var github = require('../source/github');
 
 module.exports = commit;
@@ -22694,7 +22754,7 @@ function commit(context, callback) {
     return wrap;
 }
 
-},{"../source/github":118}],121:[function(require,module,exports){
+},{"../source/github":119}],122:[function(require,module,exports){
 var readDrop = require('../lib/readfile.js').readDrop,
     geocoder = require('./geocode.js'),
     flash = require('./flash.js'),
@@ -22744,126 +22804,10 @@ module.exports = function(context) {
     }
 };
 
-},{"../lib/readfile.js":110,"../lib/zoomextent":113,"./flash.js":124,"./geocode.js":125}],122:[function(require,module,exports){
-var shpwrite = require('shp-write'),
-    clone = require('clone'),
-    topojson = require('topojson'),
-    saveAs = require('filesaver.js'),
-    tokml = require('tokml');
-
-module.exports = download;
-
-function download(context) {
-
-    var shpSupport = typeof ArrayBuffer !== 'undefined';
-
-
-    function downloadTopo() {
-        var content = JSON.stringify(topojson.topology({
-            collection: clone(context.data.get('map'))
-        }, {'property-transform': allProperties}));
-
-        saveAs(new Blob([content], {
-            type: 'text/plain;charset=utf-8'
-        }), 'map.topojson');
-
-        analytics.track('download/topojson');
-    }
-
-    function downloadGeoJSON() {
-        if (d3.event) d3.event.preventDefault();
-        var content = JSON.stringify(context.data.get('map'));
-        var meta = context.data.get('meta');
-        saveAs(new Blob([content], {
-            type: 'text/plain;charset=utf-8'
-        }), (meta && meta.name) || 'map.geojson');
-        analytics.track('download/geojson');
-    }
-
-    function downloadKML() {
-        if (d3.event) d3.event.preventDefault();
-        var content = tokml(context.data.get('map'));
-        var meta = context.data.get('meta');
-        saveAs(new Blob([content], {
-            type: 'text/plain;charset=utf-8'
-        }), 'map.kml');
-        analytics.track('download/kml');
-    }
-
-    function downloadShp() {
-        if (d3.event) d3.event.preventDefault();
-        d3.select('.map').classed('loading', true);
-        try {
-            shpwrite.download(context.data.get('map'));
-        } finally {
-            d3.select('.map').classed('loading', false);
-        }
-        analytics.track('download/shp');
-    }
-
-    function allProperties(properties, key, value) {
-        properties[key] = value;
-        return true;
-    }
-
-    return function(selection) {
-
-        selection.select('.download').remove();
-        selection.select('.tooltip.in')
-          .classed('in', false);
-
-        var sel = selection.append('div')
-            .attr('class', 'download pad1');
-
-        var actions = [{
-            icon: 'icon-map-marker',
-            title: 'GeoJSON',
-            action: downloadGeoJSON
-        }, {
-            icon: 'icon-file',
-            title: 'TopoJSON',
-            action: downloadTopo
-        }, {
-            icon: 'icon-code',
-            title: 'KML',
-            action: downloadKML
-        }];
-
-        if (shpSupport) {
-            actions.push({
-                icon: 'icon-file-alt',
-                title: 'Shapefile (beta)',
-                action: downloadShp
-            });
-        }
-
-        var links = sel
-            .selectAll('.action')
-            .data(actions)
-            .enter()
-            .append('a')
-            .attr('class', 'action')
-            .on('click', function(d) {
-                d.action.apply(this, d);
-            });
-
-        links.append('span')
-            .attr('class', function(d) { return d.icon + ' pre-icon'; });
-
-        links.append('span')
-            .text(function(d) { return d.title; });
-
-        sel.append('a')
-            .attr('class', 'icon-remove')
-            .on('click', function() { sel.remove(); });
-    };
-}
-
-},{"clone":8,"filesaver.js":14,"shp-write":24,"tokml":63,"topojson":"L9/2mq"}],123:[function(require,module,exports){
+},{"../lib/readfile.js":111,"../lib/zoomextent":114,"./flash.js":124,"./geocode.js":125}],123:[function(require,module,exports){
 var share = require('./share'),
     sourcepanel = require('./source.js'),
     flash = require('./flash'),
-    download = require('./download'),
     zoomextent = require('../lib/zoomextent'),
     readFile = require('../lib/readfile'),
     saver = require('../ui/saver.js');
@@ -22887,7 +22831,7 @@ module.exports = function fileBar(context) {
             .on('click', function() {
                 d3.event.preventDefault();
                 activeDrawer();
-                event.share();
+                context.container.call(share(context));
             });
 
         var actions = [{
@@ -22905,12 +22849,6 @@ module.exports = function fileBar(context) {
             icon: 'plus',
             action: function() {
                 window.open('/#new');
-            }
-        }, {
-            title: 'Download',
-            icon: 'down',
-            action: function() {
-                context.container.call(download(context));
             }
         }];
 
@@ -22930,27 +22868,31 @@ module.exports = function fileBar(context) {
         }
 
         function saveNoun(_) {
-            buttons.filter(function(b) {
+
+            // TODO Rework this when save is moved.
+            nav.filter(function(b) {
                 return b.title === 'Save';
             }).select('span.title').text(_);
         }
 
-        var buttons = selection.append('div')
-            .attr('class', 'fr')
-            .selectAll('button')
+        var nav = selection.append('div')
+            .attr('class', 'col4 row1')
+            .selectAll('a')
             .data(actions)
             .enter()
-            .append('button')
-            .on('click', function(d) {
-                d.action.apply(this, d);
-            })
-            .attr('data-original-title', function(d) {
-                return d.title;
-            })
+            .append('a')
+            .attr('href', '#')
+            .text(function(d) { return d.title; })
             .attr('class', function(d) {
-                return d.icon + ' icon sq40';
+                return d.icon + ' icon button unround';
             })
-            .call(bootstrap.tooltip().placement('bottom'));
+            .on('click', function(d) {
+                d3.event.preventDefault();
+
+                // TODO Kill this line when the title is removed
+                if (d.title !== 'Save') activeDrawer();
+                d.action.apply(this, d);
+            });
 
         context.dispatch.on('change.filebar', onchange);
 
@@ -23010,7 +22952,7 @@ module.exports = function fileBar(context) {
     return bar;
 };
 
-},{"../lib/readfile":110,"../lib/zoomextent":113,"../ui/saver.js":131,"./download":122,"./flash":124,"./share":132,"./source.js":133}],124:[function(require,module,exports){
+},{"../lib/readfile":111,"../lib/zoomextent":114,"../ui/saver.js":131,"./flash":124,"./share":132,"./source.js":133}],124:[function(require,module,exports){
 var message = require('./message');
 
 function flash(txt) {
@@ -23168,7 +23110,7 @@ function printObj(o) {
         .map(function(_) { return _.key + ': ' + _.value; }).join(',') + ')';
 }
 
-},{"../lib/progress_chart":109,"csv2geojson":9}],126:[function(require,module,exports){
+},{"../lib/progress_chart":110,"csv2geojson":9}],126:[function(require,module,exports){
 var importSupport = !!(window.FileReader),
     flash = require('./flash.js'),
     geocode = require('./geocode.js'),
@@ -23256,7 +23198,7 @@ module.exports = function(context) {
     };
 };
 
-},{"../lib/readfile.js":110,"../lib/zoomextent":113,"./flash.js":124,"./geocode.js":125}],127:[function(require,module,exports){
+},{"../lib/readfile.js":111,"../lib/zoomextent":114,"./flash.js":124,"./geocode.js":125}],127:[function(require,module,exports){
 module.exports = function(context) {
 
     return function(selection) {
@@ -23445,7 +23387,7 @@ function bindPopup(l) {
     }, l).setContent(content));
 }
 
-},{"../lib/custom_hash.js":107,"../lib/popup":108,"qs-hash":23}],129:[function(require,module,exports){
+},{"../lib/custom_hash.js":108,"../lib/popup":109,"qs-hash":23}],129:[function(require,module,exports){
 function message(selection) {
     'use strict';
 
@@ -23521,7 +23463,7 @@ module.exports = function(context, pane) {
     };
 };
 
-},{"../panel/help":114,"../panel/json":115,"../panel/table":116}],131:[function(require,module,exports){
+},{"../panel/help":115,"../panel/json":116,"../panel/table":117}],131:[function(require,module,exports){
 var commit = require('./commit');
 var flash = require('./flash');
 
@@ -23583,8 +23525,9 @@ module.exports = function(context) {
     }
 };
 
-},{"./commit":120,"./flash":124}],132:[function(require,module,exports){
+},{"./commit":121,"./flash":124}],132:[function(require,module,exports){
 var gist = require('../source/gist');
+var download = require('../download');
 
 module.exports = share;
 
@@ -23602,65 +23545,134 @@ function emailUrl(_) {
 
 function share(context) {
     return function(selection) {
+        var container = d3.select('#share');
+        container
+            .html('')
+            .classed('active', true);
 
-        selection.select('.share').remove();
-        selection.select('.tooltip.in')
-          .classed('in', false);
-
-        var sel = selection.append('div')
-            .attr('class', 'share pad1');
+        var sel = container.append('div')
+            .attr('class', 'col6 margin3 pad4y clearfix');
 
         var networks = [{
-            icon: 'icon-facebook',
-            title: 'Facebook',
-            url: facebookUrl(location.href)
-        }, {
-            icon: 'icon-twitter',
             title: 'Twitter',
+            klass: 'twitter col4',
             url: twitterUrl(location.href)
         }, {
-            icon: 'icon-envelope-alt',
+            title: 'Facebook',
+            klass: 'facebook col4',
+            url: facebookUrl(location.href)
+        }, {
             title: 'Email',
+            klass: 'mail col4',
             url: emailUrl(location.href)
         }];
 
-        var links = sel
+        var shareGroup = sel
+            .append('div')
+            .attr('class', 'clearfix col8');
+
+        var shareLinks = shareGroup
+            .append('div')
+            .attr('class', 'clearfix pill col12 space-bottom');
+
+        shareLinks
             .selectAll('.network')
             .data(networks)
             .enter()
             .append('a')
             .attr('target', '_blank')
-            .attr('class', 'network')
+            .text(function(d) { return d.title; })
+            .attr('class', function(d) { return d.klass + ' icon button'; })
             .attr('href', function(d) { return d.url; });
 
-        links.append('span')
-            .attr('class', function(d) { return d.icon + ' pre-icon'; });
+        var fieldset = shareGroup
+            .append('fieldset')
+            .attr('class', 'with-icon col12');
 
-        links.append('span')
-            .text(function(d) { return d.title; });
+        fieldset
+            .append('span')
+            .attr('class', 'icon share');
 
-        var embed_html = sel
+        var embed_html = fieldset
             .append('input')
             .attr('type', 'text')
-            .attr('title', 'Embed HTML');
+            .attr('readonly', true)
+            .attr('class', 'col12')
+            .attr('placeholder', 'Embed HTML')
+            .on('click', function() {
+                this.select();
+            });
+
+        fieldset
+            .append('p')
+            .text('Use the url to embed the map on an html page.')
+            .attr('class', 'pad1y small');
+
+        var downloadActions = [{
+            title: 'GeoJSON',
+            action: function() {
+                context.container.call(download.geoJSON(context));
+            }
+        }, {
+            title: 'TopoJSON',
+            action: function() {
+                context.container.call(download.topo(context));
+            }
+        }, {
+            icon: 'icon-code',
+            title: 'KML',
+            action: function() {
+                context.container.call(download.kml(context));
+            }
+        }];
+
+        if (typeof ArrayBuffer !== 'undefined') {
+            downloadActions.push({
+                title: 'Shapefile (beta)',
+                action: function() {
+                    context.container.call(download.shp(context));
+                }
+            });
+        }
+
+        var downloadGroup = sel
+            .append('div')
+            .attr('class', 'col3 margin1 pill')
+            .selectAll('a')
+            .data(downloadActions)
+            .enter()
+            .append('a')
+            .attr('class', 'download button loud icon down col12')
+            .attr('href', '#')
+            .text(function(d) { return d.title; })
+            .on('click', function(d) {
+                d3.event.preventDefault();
+                d.action.apply(this, d);
+            });
 
         sel.append('a')
-            .attr('class', 'icon-remove')
-            .on('click', function() { sel.remove(); });
+            .attr('class', 'big quiet icon x pin-right')
+            .attr('href', '#')
+            .on('click', function() {
+                d3.event.preventDefault();
+                d3.select('.nav-bar').classed('active', true);
+                d3.select('.active.module').classed('active', false);
+            });
 
         gist.saveBlocks(context.data.get('map'), function(err, res) {
             if (err) return;
             if (res) {
                 embed_html.property('value',
-                    '<iframe frameborder="0" width="100%" height="300" ' +
-                    'src="http://bl.ocks.org/d/' + res.id + '"></iframe>');
-                embed_html.node().select();
+                    '<iframe ' +
+                    'src="http://bl.ocks.org/d/' + res.id + '" ' +
+                    'frameborder="0" width="100%" height="300">' +
+                    '</iframe>');
             }
         });
     };
 }
 
-},{"../source/gist":117}],133:[function(require,module,exports){
+},{"../download":106,"../source/gist":118}],133:[function(require,module,exports){
 var importPanel = require('./import'),
     githubBrowser = require('github-file-browser')(d3),
     qs = require('qs-hash'),
@@ -23833,5 +23845,5 @@ module.exports = function(context) {
     };
 };
 
-},{}]},{},[106])
+},{}]},{},[107])
 ;

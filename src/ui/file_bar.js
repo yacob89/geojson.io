@@ -1,7 +1,6 @@
 var share = require('./share'),
     sourcepanel = require('./source.js'),
     flash = require('./flash'),
-    download = require('./download'),
     zoomextent = require('../lib/zoomextent'),
     readFile = require('../lib/readfile'),
     saver = require('../ui/saver.js');
@@ -25,7 +24,7 @@ module.exports = function fileBar(context) {
             .on('click', function() {
                 d3.event.preventDefault();
                 activeDrawer();
-                event.share();
+                context.container.call(share(context));
             });
 
         var actions = [{
@@ -43,12 +42,6 @@ module.exports = function fileBar(context) {
             icon: 'plus',
             action: function() {
                 window.open('/#new');
-            }
-        }, {
-            title: 'Download',
-            icon: 'down',
-            action: function() {
-                context.container.call(download(context));
             }
         }];
 
@@ -68,27 +61,31 @@ module.exports = function fileBar(context) {
         }
 
         function saveNoun(_) {
-            buttons.filter(function(b) {
+
+            // TODO Rework this when save is moved.
+            nav.filter(function(b) {
                 return b.title === 'Save';
             }).select('span.title').text(_);
         }
 
-        var buttons = selection.append('div')
-            .attr('class', 'fr')
-            .selectAll('button')
+        var nav = selection.append('div')
+            .attr('class', 'col4 row1')
+            .selectAll('a')
             .data(actions)
             .enter()
-            .append('button')
-            .on('click', function(d) {
-                d.action.apply(this, d);
-            })
-            .attr('data-original-title', function(d) {
-                return d.title;
-            })
+            .append('a')
+            .attr('href', '#')
+            .text(function(d) { return d.title; })
             .attr('class', function(d) {
-                return d.icon + ' icon sq40';
+                return d.icon + ' icon button unround';
             })
-            .call(bootstrap.tooltip().placement('bottom'));
+            .on('click', function(d) {
+                d3.event.preventDefault();
+
+                // TODO Kill this line when the title is removed
+                if (d.title !== 'Save') activeDrawer();
+                d.action.apply(this, d);
+            });
 
         context.dispatch.on('change.filebar', onchange);
 

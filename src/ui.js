@@ -69,7 +69,7 @@ function ui(context) {
 
         container
             .append('div')
-            .attr('class', 'col6 margin3 pin-top fill-white file-bar')
+            .attr('class', 'col6 margin3 pin-top fill-white nav-bar')
             .call(file_bar(context));
 
         dnd(context);

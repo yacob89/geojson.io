@@ -1,4 +1,5 @@
 var gist = require('../source/gist');
+var download = require('../download');
 
 module.exports = share;
 
@@ -16,59 +17,128 @@ function emailUrl(_) {
 
 function share(context) {
     return function(selection) {
+        var container = d3.select('#share');
+        container
+            .html('')
+            .classed('active', true);
 
-        selection.select('.share').remove();
-        selection.select('.tooltip.in')
-          .classed('in', false);
-
-        var sel = selection.append('div')
-            .attr('class', 'share pad1');
+        var sel = container.append('div')
+            .attr('class', 'col6 margin3 pad4y clearfix');
 
         var networks = [{
-            icon: 'icon-facebook',
-            title: 'Facebook',
-            url: facebookUrl(location.href)
-        }, {
-            icon: 'icon-twitter',
             title: 'Twitter',
+            klass: 'twitter col4',
             url: twitterUrl(location.href)
         }, {
-            icon: 'icon-envelope-alt',
+            title: 'Facebook',
+            klass: 'facebook col4',
+            url: facebookUrl(location.href)
+        }, {
             title: 'Email',
+            klass: 'mail col4',
             url: emailUrl(location.href)
         }];
 
-        var links = sel
+        var shareGroup = sel
+            .append('div')
+            .attr('class', 'clearfix col8');
+
+        var shareLinks = shareGroup
+            .append('div')
+            .attr('class', 'clearfix pill col12 space-bottom');
+
+        shareLinks
             .selectAll('.network')
             .data(networks)
             .enter()
             .append('a')
             .attr('target', '_blank')
-            .attr('class', 'network')
+            .text(function(d) { return d.title; })
+            .attr('class', function(d) { return d.klass + ' icon button'; })
             .attr('href', function(d) { return d.url; });
 
-        links.append('span')
-            .attr('class', function(d) { return d.icon + ' pre-icon'; });
+        var fieldset = shareGroup
+            .append('fieldset')
+            .attr('class', 'with-icon col12');
 
-        links.append('span')
-            .text(function(d) { return d.title; });
+        fieldset
+            .append('span')
+            .attr('class', 'icon share');
 
-        var embed_html = sel
+        var embed_html = fieldset
             .append('input')
             .attr('type', 'text')
-            .attr('title', 'Embed HTML');
+            .attr('readonly', true)
+            .attr('class', 'col12')
+            .attr('placeholder', 'Embed HTML')
+            .on('click', function() {
+                this.select();
+            });
+
+        fieldset
+            .append('p')
+            .text('Use the url to embed the map on an html page.')
+            .attr('class', 'pad1y small');
+
+        var downloadActions = [{
+            title: 'GeoJSON',
+            action: function() {
+                context.container.call(download.geoJSON(context));
+            }
+        }, {
+            title: 'TopoJSON',
+            action: function() {
+                context.container.call(download.topo(context));
+            }
+        }, {
+            icon: 'icon-code',
+            title: 'KML',
+            action: function() {
+                context.container.call(download.kml(context));
+            }
+        }];
+
+        if (typeof ArrayBuffer !== 'undefined') {
+            downloadActions.push({
+                title: 'Shapefile (beta)',
+                action: function() {
+                    context.container.call(download.shp(context));
+                }
+            });
+        }
+
+        var downloadGroup = sel
+            .append('div')
+            .attr('class', 'col3 margin1 pill')
+            .selectAll('a')
+            .data(downloadActions)
+            .enter()
+            .append('a')
+            .attr('class', 'download button loud icon down col12')
+            .attr('href', '#')
+            .text(function(d) { return d.title; })
+            .on('click', function(d) {
+                d3.event.preventDefault();
+                d.action.apply(this, d);
+            });
 
         sel.append('a')
-            .attr('class', 'icon-remove')
-            .on('click', function() { sel.remove(); });
+            .attr('class', 'big quiet icon x pin-right')
+            .attr('href', '#')
+            .on('click', function() {
+                d3.event.preventDefault();
+                d3.select('.nav-bar').classed('active', true);
+                d3.select('.active.module').classed('active', false);
+            });
 
         gist.saveBlocks(context.data.get('map'), function(err, res) {
             if (err) return;
             if (res) {
                 embed_html.property('value',
-                    '<iframe frameborder="0" width="100%" height="300" ' +
-                    'src="http://bl.ocks.org/d/' + res.id + '"></iframe>');
-                embed_html.node().select();
+                    '<iframe ' +
+                    'src="http://bl.ocks.org/d/' + res.id + '" ' +
+                    'frameborder="0" width="100%" height="300">' +
+                    '</iframe>');
             }
         });
     };
