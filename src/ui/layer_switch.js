@@ -33,13 +33,17 @@ module.exports = function(context) {
         };
 
         var layerButtons = selection.append('div')
-            .attr('class', 'layer-switch')
-            .selectAll('button')
+            .attr('class', 'pin-bottom pad1 pill col2 hidden')
+            .selectAll('a')
             .data(layers)
             .enter()
-            .append('button')
-            .attr('class', 'pad0')
-            .on('click', layerSwap)
+            .append('a')
+            .attr('href', '#')
+            .attr('class', 'button col4')
+            .on('click', function() {
+                d3.event.preventDefault();
+                layerSwap();
+            })
             .text(function(d) { return d.title; });
 
         layerButtons.filter(function(d, i) { return i === 0; }).call(layerSwap);

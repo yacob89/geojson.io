@@ -22561,13 +22561,13 @@ var buttons = require('./ui/mode_buttons'),
     file_bar = require('./ui/file_bar'),
     dnd = require('./ui/dnd'),
     userUi = require('./ui/user'),
-    layer_switch = require('./ui/layer_switch');
+    layer_switch = require('./ui/layer_switch'),
+    saver = require('./ui/saver.js');
 
 module.exports = ui;
 
 function ui(context) {
     function init(selection) {
-
         var container = selection
             .append('div')
             .attr('class', 'container');
@@ -22584,35 +22584,17 @@ function ui(context) {
     }
 
     function render(selection) {
-
         var container = init(selection);
 
-        var right = container
+        var edit = container
             .append('div')
-            .attr('class', 'right');
+            .attr('class', 'module fill-white animate pin-bottom offcanvas-bottom col12 row6');
 
-        var top = right
+        var top = edit
             .append('div')
             .attr('class', 'top');
 
-        top
-            .append('button')
-            .attr('class', 'collapse-button')
-            .attr('title', 'Collapse')
-            .on('click', function collapse() {
-                d3.select('body').classed('fullscreen',
-                    !d3.select('body').classed('fullscreen'));
-                var full = d3.select('body').classed('fullscreen');
-                d3.select(this)
-                    .select('.icon')
-                    .classed('icon-caret-up', !full)
-                    .classed('icon-caret-down', full);
-                context.map.invalidateSize();
-            })
-            .append('class', 'span')
-            .attr('class', 'icon icon-caret-up');
-
-        var pane = right
+        var pane = edit
             .append('div')
             .attr('class', 'pane');
 
@@ -22632,6 +22614,53 @@ function ui(context) {
             .call(file_bar(context));
 
         dnd(context);
+
+        function blindImport() {
+            var put = d3.select('body')
+                .append('input')
+                .attr('type', 'file')
+                .style('visibility', 'hidden')
+                .style('position', 'absolute')
+                .style('height', '0')
+                .on('change', function() {
+                    var files = this.files;
+                    if (!(files && files[0])) return;
+                    readFile.readAsText(files[0], function(err, text) {
+                        readFile.readFile(files[0], text, onImport);
+                    });
+                    put.remove();
+                });
+            put.node().click();
+        }
+
+        function onImport(err, gj, warning) {
+            if (gj && gj.features) {
+                context.data.mergeFeatures(gj.features);
+                if (warning) {
+                    flash(context.container, warning.message);
+                } else {
+                    flash(context.container, 'Imported ' + gj.features.length + ' features.')
+                        .classed('success', 'true');
+                }
+                zoomextent(context);
+            }
+        }
+
+        function saveAction() {
+            if (d3.event) d3.event.preventDefault();
+            saver(context);
+        }
+
+        d3.select(document).call(
+            d3.keybinding('file_bar')
+                .on('⌘+o', function() {
+                    blindImport();
+                    d3.event.preventDefault();
+                })
+                .on('⌘+s', saveAction)
+                .on('esc', function() {
+                    d3.select('.module.active').classed('active', false);
+                }));
     }
 
 
@@ -22641,7 +22670,7 @@ function ui(context) {
     };
 }
 
-},{"./ui/dnd":120,"./ui/file_bar":121,"./ui/layer_switch":125,"./ui/mode_buttons":128,"./ui/user":132}],119:[function(require,module,exports){
+},{"./ui/dnd":120,"./ui/file_bar":121,"./ui/layer_switch":125,"./ui/mode_buttons":128,"./ui/saver.js":129,"./ui/user":132}],119:[function(require,module,exports){
 var github = require('../source/github');
 
 module.exports = commit;
@@ -22731,8 +22760,7 @@ var share = require('./share'),
     sourcepanel = require('./source.js'),
     flash = require('./flash'),
     zoomextent = require('../lib/zoomextent'),
-    readFile = require('../lib/readfile'),
-    saver = require('../ui/saver.js');
+    readFile = require('../lib/readfile');
 
 module.exports = function fileBar(context) {
 
@@ -22757,30 +22785,21 @@ module.exports = function fileBar(context) {
             });
 
         var actions = [{
-            title: 'Save',
-            icon: 'floppy',
-            action: saveAction
-        }, {
-            title: 'Add',
-            icon: 'plus',
+            title: 'Edit',
+            klass: 'pencil col6',
             action: function() {
-                context.container.call(sourcepanel(context));
+                context.container.call(data(context));
             }
         }, {
-            title: 'New',
-            icon: 'plus',
+            title: 'Add',
+            klass: 'plus col6',
             action: function() {
-                window.open('/#new');
+                context.container.call(sourcepanel(context));
             }
         }];
 
         function activeDrawer() {
             d3.select('.nav-bar').classed('active', false);
-        }
-
-        function saveAction() {
-            if (d3.event) d3.event.preventDefault();
-            saver(context);
         }
 
         function sourceIcon(type) {
@@ -22798,7 +22817,7 @@ module.exports = function fileBar(context) {
         }
 
         var nav = selection.append('div')
-            .attr('class', 'col4 row1')
+            .attr('class', 'col4 row1 pill unround')
             .selectAll('a')
             .data(actions)
             .enter()
@@ -22806,7 +22825,7 @@ module.exports = function fileBar(context) {
             .attr('href', '#')
             .text(function(d) { return d.title; })
             .attr('class', function(d) {
-                return d.icon + ' icon button unround';
+                return d.klass + ' icon button';
             })
             .on('click', function(d) {
                 d3.event.preventDefault();
@@ -22831,50 +22850,12 @@ module.exports = function fileBar(context) {
             saveNoun(type == 'github' ? 'Commit' : 'Save');
         }
 
-        function blindImport() {
-            var put = d3.select('body')
-                .append('input')
-                .attr('type', 'file')
-                .style('visibility', 'hidden')
-                .style('position', 'absolute')
-                .style('height', '0')
-                .on('change', function() {
-                    var files = this.files;
-                    if (!(files && files[0])) return;
-                    readFile.readAsText(files[0], function(err, text) {
-                        readFile.readFile(files[0], text, onImport);
-                    });
-                    put.remove();
-                });
-            put.node().click();
-        }
-
-        function onImport(err, gj, warning) {
-            if (gj && gj.features) {
-                context.data.mergeFeatures(gj.features);
-                if (warning) {
-                    flash(context.container, warning.message);
-                } else {
-                    flash(context.container, 'Imported ' + gj.features.length + ' features.')
-                        .classed('success', 'true');
-                }
-                zoomextent(context);
-            }
-        }
-
-        d3.select(document).call(
-            d3.keybinding('file_bar')
-                .on('⌘+o', function() {
-                    blindImport();
-                    d3.event.preventDefault();
-                })
-                .on('⌘+s', saveAction));
     }
 
     return bar;
 };
 
-},{"../lib/readfile":108,"../lib/zoomextent":111,"../ui/saver.js":129,"./flash":122,"./share":130,"./source.js":131}],122:[function(require,module,exports){
+},{"../lib/readfile":108,"../lib/zoomextent":111,"./flash":122,"./share":130,"./source.js":131}],122:[function(require,module,exports){
 var message = require('./message');
 
 function flash(txt) {
@@ -23156,13 +23137,17 @@ module.exports = function(context) {
         };
 
         var layerButtons = selection.append('div')
-            .attr('class', 'layer-switch')
-            .selectAll('button')
+            .attr('class', 'pin-bottom pad1 pill col2 hidden')
+            .selectAll('a')
             .data(layers)
             .enter()
-            .append('button')
-            .attr('class', 'pad0')
-            .on('click', layerSwap)
+            .append('a')
+            .attr('href', '#')
+            .attr('class', 'button col4')
+            .on('click', function() {
+                d3.event.preventDefault();
+                layerSwap();
+            })
             .text(function(d) { return d.title; });
 
         layerButtons.filter(function(d, i) { return i === 0; }).call(layerSwap);

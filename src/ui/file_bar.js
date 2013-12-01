@@ -2,8 +2,7 @@ var share = require('./share'),
     sourcepanel = require('./source.js'),
     flash = require('./flash'),
     zoomextent = require('../lib/zoomextent'),
-    readFile = require('../lib/readfile'),
-    saver = require('../ui/saver.js');
+    readFile = require('../lib/readfile');
 
 module.exports = function fileBar(context) {
 
@@ -28,30 +27,21 @@ module.exports = function fileBar(context) {
             });
 
         var actions = [{
-            title: 'Save',
-            icon: 'floppy',
-            action: saveAction
-        }, {
-            title: 'Add',
-            icon: 'plus',
+            title: 'Edit',
+            klass: 'pencil col6',
             action: function() {
-                context.container.call(sourcepanel(context));
+                context.container.call(data(context));
             }
         }, {
-            title: 'New',
-            icon: 'plus',
+            title: 'Add',
+            klass: 'plus col6',
             action: function() {
-                window.open('/#new');
+                context.container.call(sourcepanel(context));
             }
         }];
 
         function activeDrawer() {
             d3.select('.nav-bar').classed('active', false);
-        }
-
-        function saveAction() {
-            if (d3.event) d3.event.preventDefault();
-            saver(context);
         }
 
         function sourceIcon(type) {
@@ -69,7 +59,7 @@ module.exports = function fileBar(context) {
         }
 
         var nav = selection.append('div')
-            .attr('class', 'col4 row1')
+            .attr('class', 'col4 row1 pill unround')
             .selectAll('a')
             .data(actions)
             .enter()
@@ -77,7 +67,7 @@ module.exports = function fileBar(context) {
             .attr('href', '#')
             .text(function(d) { return d.title; })
             .attr('class', function(d) {
-                return d.icon + ' icon button unround';
+                return d.klass + ' icon button';
             })
             .on('click', function(d) {
                 d3.event.preventDefault();
@@ -102,44 +92,6 @@ module.exports = function fileBar(context) {
             saveNoun(type == 'github' ? 'Commit' : 'Save');
         }
 
-        function blindImport() {
-            var put = d3.select('body')
-                .append('input')
-                .attr('type', 'file')
-                .style('visibility', 'hidden')
-                .style('position', 'absolute')
-                .style('height', '0')
-                .on('change', function() {
-                    var files = this.files;
-                    if (!(files && files[0])) return;
-                    readFile.readAsText(files[0], function(err, text) {
-                        readFile.readFile(files[0], text, onImport);
-                    });
-                    put.remove();
-                });
-            put.node().click();
-        }
-
-        function onImport(err, gj, warning) {
-            if (gj && gj.features) {
-                context.data.mergeFeatures(gj.features);
-                if (warning) {
-                    flash(context.container, warning.message);
-                } else {
-                    flash(context.container, 'Imported ' + gj.features.length + ' features.')
-                        .classed('success', 'true');
-                }
-                zoomextent(context);
-            }
-        }
-
-        d3.select(document).call(
-            d3.keybinding('file_bar')
-                .on('⌘+o', function() {
-                    blindImport();
-                    d3.event.preventDefault();
-                })
-                .on('⌘+s', saveAction));
     }
 
     return bar;

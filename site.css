@@ -1,3 +1,7 @@
+/* Base Candidates */
+.pill.unround > * { border-radius:0; }
+.leaflet-container .button {color:#fff; }
+
 body, .container {
   position:absolute;
   width:100%;

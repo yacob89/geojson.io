@@ -2,13 +2,13 @@ var buttons = require('./ui/mode_buttons'),
     file_bar = require('./ui/file_bar'),
     dnd = require('./ui/dnd'),
     userUi = require('./ui/user'),
-    layer_switch = require('./ui/layer_switch');
+    layer_switch = require('./ui/layer_switch'),
+    saver = require('./ui/saver.js');
 
 module.exports = ui;
 
 function ui(context) {
     function init(selection) {
-
         var container = selection
             .append('div')
             .attr('class', 'container');
@@ -25,35 +25,17 @@ function ui(context) {
     }
 
     function render(selection) {
-
         var container = init(selection);
 
-        var right = container
+        var edit = container
             .append('div')
-            .attr('class', 'right');
+            .attr('class', 'module fill-white animate pin-bottom offcanvas-bottom col12 row6');
 
-        var top = right
+        var top = edit
             .append('div')
             .attr('class', 'top');
 
-        top
-            .append('button')
-            .attr('class', 'collapse-button')
-            .attr('title', 'Collapse')
-            .on('click', function collapse() {
-                d3.select('body').classed('fullscreen',
-                    !d3.select('body').classed('fullscreen'));
-                var full = d3.select('body').classed('fullscreen');
-                d3.select(this)
-                    .select('.icon')
-                    .classed('icon-caret-up', !full)
-                    .classed('icon-caret-down', full);
-                context.map.invalidateSize();
-            })
-            .append('class', 'span')
-            .attr('class', 'icon icon-caret-up');
-
-        var pane = right
+        var pane = edit
             .append('div')
             .attr('class', 'pane');
 
@@ -73,6 +55,53 @@ function ui(context) {
             .call(file_bar(context));
 
         dnd(context);
+
+        function blindImport() {
+            var put = d3.select('body')
+                .append('input')
+                .attr('type', 'file')
+                .style('visibility', 'hidden')
+                .style('position', 'absolute')
+                .style('height', '0')
+                .on('change', function() {
+                    var files = this.files;
+                    if (!(files && files[0])) return;
+                    readFile.readAsText(files[0], function(err, text) {
+                        readFile.readFile(files[0], text, onImport);
+                    });
+                    put.remove();
+                });
+            put.node().click();
+        }
+
+        function onImport(err, gj, warning) {
+            if (gj && gj.features) {
+                context.data.mergeFeatures(gj.features);
+                if (warning) {
+                    flash(context.container, warning.message);
+                } else {
+                    flash(context.container, 'Imported ' + gj.features.length + ' features.')
+                        .classed('success', 'true');
+                }
+                zoomextent(context);
+            }
+        }
+
+        function saveAction() {
+            if (d3.event) d3.event.preventDefault();
+            saver(context);
+        }
+
+        d3.select(document).call(
+            d3.keybinding('file_bar')
+                .on('⌘+o', function() {
+                    blindImport();
+                    d3.event.preventDefault();
+                })
+                .on('⌘+s', saveAction)
+                .on('esc', function() {
+                    d3.select('.module.active').classed('active', false);
+                }));
     }
 
 
