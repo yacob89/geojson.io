@@ -1,0 +1,264 @@
+body, .container {
+  position:absolute;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  }
+.map {
+  background:#73b5e5;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  }
+.alert-bar,
+.module {
+  z-index:5000;
+  }
+.drop {
+  margin-top:10px;
+  }
+
+p.intro-hint {
+  margin:10px auto;
+  opacity:0.5;
+  font-size:small;
+  border-top:1px solid #e0e0e0;
+  border-bottom:1px solid #e0e0e0;
+  border-radius:1px;
+  }
+p.intro-hint:hover {
+  opacity:1;
+  }
+.CodeMirror {
+  position:absolute;
+  bottom:0;
+  right:0;
+  left:0;
+  top:0;
+  height:auto !important;
+  background:#f1f1f1;
+  font-family: 'Droid Sans Mono', sans-serif;
+  line-height:1.5em;
+  }
+.error-marker {
+  width:10px;
+  height:1.5em;
+  background:#EAB;
+  transition:all 100ms;
+  -webkit-transition:all 100ms;
+  }
+.error-marker:hover {
+  background:#D68;
+  }
+.error-marker:before {
+  opacity:0;
+  pointer-events:none;
+  content:attr(message);
+  transition:all 100ms;
+  -webkit-transition:all 100ms;
+  width:300px;
+  font-size:10px;
+  padding:5px;
+  border:1px solid #000;
+  position:absolute;
+  background:#fff;
+  z-index:999;
+  }
+.error-marker:hover:before {
+  opacity:1;
+  margin-left:35px;
+  }
+.leaflet-container .leaflet-control-attribution {
+  background:none;
+  box-shadow:none;
+  }
+.leaflet-popup-content-wrapper table input {
+  width:120px;
+  background:transparent;
+  }
+.scrollable {
+  overflow:auto;
+  }
+.controls {
+  padding-bottom:20px;
+  }
+.controls button {
+  border:1px solid #ccc;
+  }
+.controls button:hover {
+  background:#fff;
+  }
+body.dragover {
+  opacity:0.6;
+  }
+.modal-message {
+  display:none;
+  }
+body.dragover .modal-message {
+  position:fixed;
+  left:50%;
+  top:50%;
+  text-align:center;
+  }
+.fail {
+  font-size:11px;
+  padding:5px;
+  }
+.blank-banner {
+  text-align:center;
+  font-size:20px;
+  padding:80px 20px;
+  color:#888;
+  }
+textarea.full-width {
+  box-sizing:border-box;
+  width:100%;
+  padding:5px;
+  height:60px;
+  border:1px solid #ccc;
+  border-radius:2px;
+  font:inherit;
+  }
+.clickable:hover,
+.clickable.active {
+  background:#eee;
+  }
+.icon-spaced {
+  margin-right:5px;
+  }
+.clickable {
+  cursor:pointer;
+  }
+
+/* Codemirror syntax highlighting
+------------------------------------------------ */
+.cm-s-eclipse span.cm-meta {color: #FF1717;}
+.cm-s-eclipse span.cm-keyword { line-height: 1em; font-weight: bold; color: #7F0055; }
+.cm-s-eclipse span.cm-atom {color: #219;}
+.cm-s-eclipse span.cm-number {color: #164;}
+.cm-s-eclipse span.cm-def {color: #00f;}
+.cm-s-eclipse span.cm-variable {color: black;}
+.cm-s-eclipse span.cm-variable-2 {color: #0000C0;}
+.cm-s-eclipse span.cm-variable-3 {color: #0000C0;}
+.cm-s-eclipse span.cm-property {color: black;}
+.cm-s-eclipse span.cm-operator {color: black;}
+.cm-s-eclipse span.cm-comment {color: #3F7F5F;}
+.cm-s-eclipse span.cm-string {color: #2A00FF;}
+.cm-s-eclipse span.cm-string-2 {color: #f50;}
+.cm-s-eclipse span.cm-error {color: #f00;}
+.cm-s-eclipse span.cm-qualifier {color: #555;}
+.cm-s-eclipse span.cm-builtin {color: #30a;}
+.cm-s-eclipse span.cm-bracket {color: #cc7;}
+.cm-s-eclipse span.cm-tag {color: #170;}
+.cm-s-eclipse span.cm-attribute {color: #00c;}
+.cm-s-eclipse span.cm-link {color: #219;}
+
+.cm-s-eclipse .CodeMirror-matchingbracket {
+  outline:1px solid grey;
+  color:black !important;
+  }
+
+/* Markers
+------------------------------------------------ */
+.marker-properties-limit {
+  overflow:auto;
+  max-height:150px;
+  max-width:500px;
+  }
+.marker-properties {
+  border-collapse:collapse;
+  font-size:11px;
+  border:1px solid #ccc;
+  margin:0;
+  }
+.marker-properties td,
+.marker-properties th {
+  white-space:nowrap;
+  border:1px solid #ccc;
+  }
+.marker-properties.display td,
+.marker-properties.display th {
+  padding:5px 10px;
+  }
+.marker-properties tr:last-child td,
+.marker-properties tr:last-child th {
+  border-bottom:none;
+  }
+.marker-properties tr:nth-child(even) th,
+.marker-properties tr:nth-child(even) td {
+  background-color:#f7f7f7;
+  }
+
+/* GitHub browser
+------------------------------------------------ */
+.browser .item {
+  transition:all 100ms ease-in;
+  margin-right:5px;
+  margin-bottom:5px;
+  -webkit-transition:all 100ms ease-in;
+  cursor:pointer;
+  border:1px solid #eee;
+  width:202px;
+  height:202px;
+  box-sizing:border-box;
+  position:relative;
+  }
+.browser .item:hover {
+  border:1px solid #777;
+  }
+.browser .item .overlay {
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  padding:5px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  overflow:hidden;
+  background:rgba(255, 255, 255, 0.1);
+  -webkit-transition:all 100ms ease-in;
+  transition:all 100ms ease-in;
+  }
+.browser .item:hover .overlay {
+  background:rgba(255, 255, 255, 0.9);
+  }
+.static-map-preview canvas,
+.static-map-preview img {
+  position:absolute;
+  }
+
+/* repos */
+.miller-wrap {
+  overflow:auto;
+  white-space:nowrap;
+  }
+.miller-column {
+  box-sizing:border-box;
+  width:200px;
+  border-right:1px solid #ccc;
+  float:left;
+  }
+.miller-column .item {
+  border-bottom:1px solid #ccc;
+  -webkit-transition:all 100ms ease-in;
+  transition:all 100ms ease-in;
+  cursor:pointer;
+  line-height:35px;
+  font-size:12px;
+  padding:0 10px;
+  box-sizing:border-box;
+  height:35px;
+  }
+.miller-column .item:last-child {
+  border:none;
+  }
+.miller-column .item:hover,
+.miller-column .item.active {
+  background:#eee;
+  }
+.miller-column .item.tree {
+  background:#F3FCFF;
+  }
+.miller-outer {
+  overflow:auto;
+  }
