@@ -28,15 +28,21 @@
   </script>
 </head>
 <body id='geojsonio-body'>
+
 <div id='add' class='module fill-white animate pin-bottom offcanvas-bottom col12 row6 clearfix'></div>
 <div id='share' class='module fill-white animate pin-bottom offcanvas-bottom col12 row6 clearfix'></div>
-<div id='data' class='active module fill-white animate pin-bottom offcanvas-bottom col12 row6 clearfix'>
+
+<div id='data' class='module fill-white animate pin-bottom offcanvas-bottom col12 row6 clearfix'>
   <div class='buttons'></div>
   <div class='pane'></div>
 </div>
+
 <div id='flash' class='margin3 col6 center alert-bar fill-yellow animate offcanvas-top pin-top'></div>
 
 <script src='//api.tiles.mapbox.com/mapbox.js/v1.5.0/mapbox.js'></script>
+<div class='geojsonio'></div>
+
+<script src='dist/delegate.js'></script>
 <script src='dist/lib.js'></script>
 <script src='dist/site.js'></script>
 <script>
