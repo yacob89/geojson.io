@@ -127,7 +127,6 @@ function share(context) {
             .attr('href', '#')
             .on('click', function() {
                 d3.event.preventDefault();
-                d3.select('.nav-bar').classed('active', true);
                 d3.select('.active.module').classed('active', false);
             });
 

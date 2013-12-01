@@ -23024,32 +23024,26 @@ module.exports = function(context) {
     return function(selection) {
         selection.html('');
 
-        var wrap = selection
+        var sel = selection
             .append('div')
-            .attr('class', 'pad1');
-
-        wrap.append('div')
-            .attr('class', 'modal-message')
-            .text('Drop files to map!');
+            .attr('class', 'col12 center animate');
 
         if (importSupport) {
-
-            var import_landing = wrap.append('div')
-                .attr('class', 'pad fillL');
-
-            var message = import_landing
-                .append('div')
-                .attr('class', 'center');
-
-            var button = message.append('button')
+            var button = sel.append('a')
+                .attr('href', '#') 
+                .attr('class', 'button icon plus col4 margin4 space-bottom')
+                .text('Import')
                 .on('click', function() {
+                    d3.event.preventDefault();
                     fileInput.node().click();
                 });
-            button.append('span').attr('class', 'icon-arrow-down');
-            button.append('span').text(' Import');
+
+            var message = sel
+                .append('div')
+                .attr('class', 'col12 fl');
+
             message.append('p')
-                .attr('class', 'deemphasize')
-                .append('small')
+                .append('p')
                 .text('GeoJSON, TopoJSON, KML, CSV, GPX and OSM XML supported. You can also drag & drop files.');
 
             var fileInput = message
@@ -23066,8 +23060,8 @@ module.exports = function(context) {
                     });
                 });
         } else {
-            wrap.append('p')
-                .attr('class', 'blank-banner center')
+            sel.append('p')
+                .attr('class', 'col12 pad1y')
                 .text('Sorry, geojson.io supports importing GeoJSON, TopoJSON, KML, CSV, GPX, and OSM XML files, but ' +
                       'your browser isn\'t compatible. Please use Google Chrome, Safari 6, IE10, Firefox, or Opera for an optimal experience.');
         }
@@ -23091,13 +23085,6 @@ module.exports = function(context) {
                 zoomextent(context);
             }
         }
-
-        wrap.append('p')
-            .attr('class', 'intro center deemphasize')
-            .html('This is an open source project. <a target="_blank" href="http://tmcw.wufoo.com/forms/z7x4m1/">Submit feedback or get help</a>, and <a target="_blank" href="http://github.com/mapbox/geojson.io"><span class="icon-github"></span> fork on GitHub</a>');
-
-        wrap.append('div')
-            .attr('class', 'pad1');
     };
 };
 
@@ -23562,7 +23549,6 @@ function share(context) {
             .attr('href', '#')
             .on('click', function() {
                 d3.event.preventDefault();
-                d3.select('.nav-bar').classed('active', true);
                 d3.select('.active.module').classed('active', false);
             });
 
@@ -23589,84 +23575,83 @@ module.exports = function(context) {
 
     function render(selection) {
 
-        selection
-            .select('.right.overlay').remove();
-
-        var panel = selection
-            .append('div')
-            .attr('class', 'right overlay');
+        var container = d3.select('#add');
+            container
+                .html('')
+                .classed('active', true);
 
         var sources = [{
             title: 'Import',
             alt: 'CSV, KML, GPX, and other filetypes',
-            icon: 'icon-cog',
+            containerHeight: 'row6',
             action: clickImport
         }, {
             title: 'GitHub',
             alt: 'GeoJSON files in GitHub Repositories',
-            icon: 'icon-github',
             authenticated: true,
+            containerHeight: 'row10',
             action: clickGitHub
         }, {
             title: 'Gist',
             alt: 'GeoJSON files in GitHub Gists',
-            icon: 'icon-github-alt',
             authenticated: true,
+            containerHeight: 'row10',
             action: clickGist
         }];
 
-        var $top = panel
-            .append('div')
-            .attr('class', 'top');
+        var contain = container.append('div')
+            .attr('class', 'col6 margin3 pad2y clearfix');
 
-       var $buttons = $top.append('div')
-            .attr('class', 'buttons');
+       var tabs = contain.append('div')
+            .attr('class', 'tabs clearfix');
 
-       var $sources = $buttons
-           .selectAll('button.source')
+       var $sources = tabs
+           .selectAll('a')
             .data(sources)
             .enter()
-            .append('button')
-            .classed('deemphasize', function(d) {
+            .append('a')
+            .attr('href', '#')
+            .classed('disabled', function(d) {
                 return d.authenticated && !context.user.token();
             })
-            .attr('class', function(d) {
-                return d.icon + ' icon-spaced pad1 source';
-            })
+            .attr('class', 'col4')
             .text(function(d) {
                 return ' ' + d.title;
             })
             .attr('title', function(d) { return d.alt; })
-            .on('click', clickSource);
+            .on('click', function(d) {
+                d3.event.preventDefault();
+                if (d.authenticated && !context.user.token()) {
+                    return alert('Log in to load GitHub files and Gists');
+                }
 
-        function clickSource(d) {
-            if (d.authenticated && !context.user.token()) {
-                return alert('Log in to load GitHub files and Gists');
-            }
+                if (d.containerHeight) {
+                    var current = container.attr('class').match(/row[0-9]+/);
+                    if (current && current !== d.containerHeight) container.classed(current[0], false);
+                    container.classed(d.containerHeight, true);
+                }
 
-            var that = this;
-            $sources.classed('active', function() {
-                return that === this;
+                var that = this;
+                $sources.classed('active', function() {
+                    return that === this;
+                });
+
+                d.action.apply(this, d);
             });
 
-            d.action.apply(this, d);
-        }
-
-        $buttons.append('button')
-            .on('click', hidePanel)
-            .attr('class', function(d) {
-                return 'icon-remove';
+        container.append('a')
+            .attr('class', 'big quiet icon x pin-right')
+            .attr('href', '#')
+            .on('click', function() {
+                d3.event.preventDefault();
+                d3.select('.active.module').classed('active', false);
             });
 
-        function hidePanel(d) {
-            panel.remove();
-        }
-
-        var $subpane = panel.append('div')
-            .attr('class', 'subpane');
+        var $panes = container.append('div')
+            .attr('class', 'fl col12 panes');
 
         function clickGitHub() {
-            $subpane
+            $panes
                 .html('')
                 .append('div')
                 .attr('class', 'repos')
@@ -23679,14 +23664,14 @@ module.exports = function(context) {
         }
 
         function clickImport() {
-            $subpane
+            $panes
                 .html('')
                 .append('div')
                 .call(importPanel(context));
         }
 
         function clickGist() {
-            $subpane
+            $panes
                 .html('')
                 .append('div')
                 .attr('class', 'browser pad1')

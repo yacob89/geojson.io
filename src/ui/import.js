@@ -8,32 +8,26 @@ module.exports = function(context) {
     return function(selection) {
         selection.html('');
 
-        var wrap = selection
+        var sel = selection
             .append('div')
-            .attr('class', 'pad1');
-
-        wrap.append('div')
-            .attr('class', 'modal-message')
-            .text('Drop files to map!');
+            .attr('class', 'col12 center animate');
 
         if (importSupport) {
-
-            var import_landing = wrap.append('div')
-                .attr('class', 'pad fillL');
-
-            var message = import_landing
-                .append('div')
-                .attr('class', 'center');
-
-            var button = message.append('button')
+            var button = sel.append('a')
+                .attr('href', '#')
+                .attr('class', 'button icon plus col4 margin4 space-bottom')
+                .text('Import')
                 .on('click', function() {
+                    d3.event.preventDefault();
                     fileInput.node().click();
                 });
-            button.append('span').attr('class', 'icon-arrow-down');
-            button.append('span').text(' Import');
+
+            var message = sel
+                .append('div')
+                .attr('class', 'col12 fl');
+
             message.append('p')
-                .attr('class', 'deemphasize')
-                .append('small')
+                .append('p')
                 .text('GeoJSON, TopoJSON, KML, CSV, GPX and OSM XML supported. You can also drag & drop files.');
 
             var fileInput = message
@@ -50,8 +44,8 @@ module.exports = function(context) {
                     });
                 });
         } else {
-            wrap.append('p')
-                .attr('class', 'blank-banner center')
+            sel.append('p')
+                .attr('class', 'col12 pad1y')
                 .text('Sorry, geojson.io supports importing GeoJSON, TopoJSON, KML, CSV, GPX, and OSM XML files, but ' +
                       'your browser isn\'t compatible. Please use Google Chrome, Safari 6, IE10, Firefox, or Opera for an optimal experience.');
         }
@@ -75,12 +69,5 @@ module.exports = function(context) {
                 zoomextent(context);
             }
         }
-
-        wrap.append('p')
-            .attr('class', 'intro center deemphasize')
-            .html('This is an open source project. <a target="_blank" href="http://tmcw.wufoo.com/forms/z7x4m1/">Submit feedback or get help</a>, and <a target="_blank" href="http://github.com/mapbox/geojson.io"><span class="icon-github"></span> fork on GitHub</a>');
-
-        wrap.append('div')
-            .attr('class', 'pad1');
     };
 };
