@@ -1,24 +1,67 @@
+var saver = require('../ui/saver.js');
+
 module.exports = function(context) {
     return function(selection) {
-        var name = selection.append('a')
-            .attr('target', '_blank');
-
-        selection.append('span').text(' | ');
-
-        var action = selection.append('a')
-            .attr('href', '#');
-
         function nextLogin() {
-            action.text('login').on('click', login);
             name
-                .text('anon')
+                .text('Anon')
                 .attr('href', '#')
-                .on('click', function() { d3.event.preventDefault(); });
+                .on('click', login)
+                .on('mouseover', function() {
+                    name.text('login');
+                })
+                .on('mouseout', function() {
+                    name.text('Anon');
+                });
         }
 
+        var actions = [{
+            title: 'Save',
+            klass: 'floppy',
+            action: saveAction
+        }, {
+            title: 'New',
+            klass: 'plus',
+            action: function() {
+                window.open('/#new');
+            }
+        }];
+
+        var actionLinks = selection.append('div')
+            .attr('class', 'pill unround col6')
+            .selectAll('a')
+            .data(actions)
+            .enter()
+            .append('a')
+            .attr('href', '#')
+            .attr('data-original-title', function(d) {
+                return d.title;
+            })
+            .on('click', function(d) {
+                d3.event.preventDefault();
+                d.action.apply(this, d);
+            })
+            .attr('class', function(d) {
+                return d.klass + ' icon button unround col6';
+            })
+            .call(bootstrap.tooltip().placement('bottom'));
+
+        var name = selection.append('a')
+            .attr('class', 'col6 quiet truncate small strong pad1')
+            .attr('href', '#');
+
         function nextLogout() {
-            name.on('click', null);
-            action.text('logout').on('click', logout);
+            name
+                .on('click', logout)
+                .on('mouseover', function() {
+                    name.text('logout');
+                })
+                .on('mouseout', function() {
+                    context.user.details(function(err, d) {
+                        if (err) return;
+                        name.text(d.login);
+                    });
+                });
         }
 
         function login() {
@@ -32,13 +75,16 @@ module.exports = function(context) {
             nextLogin();
         }
 
+        function saveAction() {
+            saver(context);
+        }
+
         nextLogin();
 
         if (context.user.token()) {
             context.user.details(function(err, d) {
                 if (err) return;
                 name.text(d.login);
-                name.attr('href', d.html_url);
                 nextLogout();
             });
         }

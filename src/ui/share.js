@@ -41,7 +41,7 @@ function share(context) {
 
         var shareGroup = sel
             .append('div')
-            .attr('class', 'clearfix col8');
+            .attr('class', 'clearfix col8 pad2r');
 
         var shareLinks = shareGroup
             .append('div')
@@ -109,7 +109,7 @@ function share(context) {
 
         var downloadGroup = sel
             .append('div')
-            .attr('class', 'col3 margin1 pill')
+            .attr('class', 'col4 pill')
             .selectAll('a')
             .data(downloadActions)
             .enter()

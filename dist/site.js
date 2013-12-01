@@ -22288,7 +22288,7 @@ module.exports = function(context) {
         var area = selection
             .html('')
             .append('div')
-            .attr('class', 'pad2 prose')
+            .attr('class', 'prose')
             .html("<h2>Help</h2>\n\n<p>New here? <strong>geojson.io</strong> is a quick, simple tool for creating,\nviewing, and sharing maps. geojson.io is named after <a href='http://geojson.org/' target='_blank'>GeoJSON</a>,\nan open source data format, and it supports GeoJSON in all ways - but also\naccepts KML, GPX, CSV, TopoJSON, and other formats.</p>\n\n<p>Need extra help or see a bug? <a target='_blank' href='https://github.com/mapbox/geojson.io/issues?state=open'>Open an issue\n    on geojson.io's issue tracker.</a>\n\n<h3>I've got data</h3>\n\n<p>If you have data, like a KML, GeoJSON, or CSV file, just drag &amp; drop\nit onto the page or click 'Open' and 'Import' - your data should appear on\nthe map!</p>\n\n<h3>I want to draw features</h3>\n\n<p>Click the drawing tools on the left-hand side to draw points, polygons,\nlines and rectangles. After you're done drawing the shapes, you can add\ninformation to each feature by clicking on it, editing the feature's properties,\nand clicking 'Save'.</p>\n\n<p>Properties in GeoJSON are stored as 'key value pairs' - so, for instance,\nif you wanted to add a name to each feature, type 'name' in the first table\nfield, and the name of the feature in the second.</p>\n\n<h3>I want to use my map everywhere</h3>\n\n<p>You can share maps in quite a few ways! If you save your map here, the URL\nof this page will update and you can link send friends the link to share\nthe map, or you can click 'Download' to grab the raw GeoJSON data and use\nit in other software, like TileMill or Leaflet.</p>\n\n<h3>I'm a coder</h3>\n\n<p><a href='https://github.com/mapbox/geojson.io#goes-great-with' target='_blank'>geojson.io has an array of cli tools</a>\nthat make it easy to go from a GeoJSON file on your computer to geojson.io.\n\n<h3>Protips?</h3>\n\n<ul>\n    <li><strong>cmd+s</strong>: save map to github gists\n    <li><strong>cmd+a</strong>: download map as geojson\n    <li><strong>arrow keys</strong>: navigate the map\n</ul>\n\n<h3>Privacy &amp; License Issues</h3>\n\n<ul>\n    <li><strong>Clicking save</strong> by default saves to a private\n    GitHub Gist - so it will only be accessible to people you share the URL\n    with, and creating it won't appear in your GitHub timeline.\n    <li><strong>The data you create and modify in geojson.io</strong> doesn't\n    acquire any additional license: if it's secret and copyrighted, it will remain\n    that way - it doesn't have to be public or open source.\n</ul>\n");
     }
 
@@ -22379,8 +22379,8 @@ module.exports = function(context) {
                 selection
                     .html('')
                     .append('div')
-                    .attr('class', 'blank-banner center')
-                    .text('no features');
+                    .attr('class', 'col12 pad2y center')
+                    .text('No features.');
             } else {
                 props = geojson.geometry ? [geojson.properties] :
                     geojson.features.map(getProperties);
@@ -22664,32 +22664,38 @@ function ui(context) {
     function render(selection) {
         var container = init(selection);
 
-        var edit = container
-            .append('div')
-            .attr('class', 'module fill-white animate pin-bottom offcanvas-bottom col12 row6');
+        var edit = d3.select('#edit');
 
         var top = edit
             .append('div')
-            .attr('class', 'top');
+            .attr('class', 'col6 margin3 pad2y clearfix');
 
         var pane = edit
             .append('div')
-            .attr('class', 'pane');
+            .attr('class', 'col8 margin2 row10 scroll');
 
         top
             .append('div')
-            .attr('class', 'user fr pad1 deemphasize')
-            .call(userUi(context));
-
-        top
-            .append('div')
-            .attr('class', 'buttons')
+            .attr('class', 'tabs clearfix')
             .call(buttons(context, pane));
+
+        edit.append('a')
+            .attr('class', 'big quiet icon x pin-right')
+            .attr('href', '#')
+            .on('click', function() {
+                d3.event.preventDefault();
+                d3.select('.active.module').classed('active', false);
+            });
 
         container
             .append('div')
             .attr('class', 'col6 margin3 pin-top fill-white nav-bar')
             .call(file_bar(context));
+
+        container
+            .append('div')
+            .attr('class', 'pin-top center fill-white round user-nav')
+            .call(userUi(context));
 
         dnd(context);
 
@@ -22866,7 +22872,7 @@ module.exports = function fileBar(context) {
             title: 'Edit',
             klass: 'pencil col6',
             action: function() {
-                context.container.call(data(context));
+                d3.select('#edit').classed('active', true);
             }
         }, {
             title: 'Add',
@@ -23393,44 +23399,42 @@ module.exports = function(context, pane) {
         var mode = null;
 
         var buttonData = [{
-            icon: 'table',
             title: ' Table',
             alt: 'Edit feature properties in a table',
             behavior: table
         }, {
-            icon: 'code',
             title: ' JSON',
             alt: 'JSON Source',
             behavior: json
         }, {
-            icon: 'question',
             title: ' Help',
             alt: 'Help',
             behavior: help
         }];
 
-        var buttons = selection
-            .selectAll('button')
-            .data(buttonData, function(d) { return d.icon; });
-
-        var enter = buttons.enter()
-            .append('button')
+        var tabs = selection
+            .selectAll('a')
+            .data(buttonData)
+            .enter()
+            .append('a')
+            .attr('href', '#')
+            .text(function(d) { return d.title; })
             .attr('title', function(d) { return d.alt; })
-            .on('click', buttonClick);
-        enter.append('span')
-            .attr('class', function(d) { return 'icon-' + d.icon; });
-        enter
-            .append('span')
-            .text(function(d) { return d.title; });
+            .attr('class', 'col4')
+            .on('click', function(d) {
+                d3.event.preventDefault();
 
-        d3.select(buttons.node()).trigger('click');
+                var that = this;
+                tabs.classed('active', function() {
+                    return that === this;
+                });
 
-        function buttonClick(d) {
-            buttons.classed('active', function(_) { return d.icon == _.icon; });
-            if (mode) mode.off();
-            mode = d.behavior(context);
-            pane.call(mode);
-        }
+                if (mode) mode.off();
+                mode = d.behavior(context);
+                pane.call(mode);
+            });
+
+        d3.select(tabs.node()).trigger('click');
     };
 };
 
@@ -23540,7 +23544,7 @@ function share(context) {
 
         var shareGroup = sel
             .append('div')
-            .attr('class', 'clearfix col8');
+            .attr('class', 'clearfix col8 pad2r');
 
         var shareLinks = shareGroup
             .append('div')
@@ -23608,7 +23612,7 @@ function share(context) {
 
         var downloadGroup = sel
             .append('div')
-            .attr('class', 'col3 margin1 pill')
+            .attr('class', 'col4 pill')
             .selectAll('a')
             .data(downloadActions)
             .enter()
@@ -23660,7 +23664,7 @@ module.exports = function(context) {
         var sources = [{
             title: 'Import',
             alt: 'CSV, KML, GPX, and other filetypes',
-            containerHeight: 'row6',
+            containerHeight: 'row7',
             action: clickImport
         }, {
             title: 'GitHub',
@@ -23767,27 +23771,70 @@ module.exports = function(context) {
 };
 
 },{"./import":126,"detect-json-indent":13,"github-file-browser":17,"qs-hash":23}],134:[function(require,module,exports){
+var saver = require('../ui/saver.js');
+
 module.exports = function(context) {
     return function(selection) {
-        var name = selection.append('a')
-            .attr('target', '_blank');
-
-        selection.append('span').text(' | ');
-
-        var action = selection.append('a')
-            .attr('href', '#');
-
         function nextLogin() {
-            action.text('login').on('click', login);
             name
-                .text('anon')
+                .text('Anon')
                 .attr('href', '#')
-                .on('click', function() { d3.event.preventDefault(); });
+                .on('click', login)
+                .on('mouseover', function() {
+                    name.text('login');
+                })
+                .on('mouseout', function() {
+                    name.text('Anon');
+                });
         }
 
+        var actions = [{
+            title: 'Save',
+            klass: 'floppy',
+            action: saveAction
+        }, {
+            title: 'New',
+            klass: 'plus',
+            action: function() {
+                window.open('/#new');
+            }
+        }];
+
+        var actionLinks = selection.append('div')
+            .attr('class', 'pill unround col6')
+            .selectAll('a')
+            .data(actions)
+            .enter()
+            .append('a')
+            .attr('href', '#')
+            .attr('data-original-title', function(d) {
+                return d.title;
+            })
+            .on('click', function(d) {
+                d3.event.preventDefault();
+                d.action.apply(this, d);
+            })
+            .attr('class', function(d) {
+                return d.klass + ' icon button unround col6';
+            })
+            .call(bootstrap.tooltip().placement('bottom'));
+
+        var name = selection.append('a')
+            .attr('class', 'col6 quiet truncate small strong pad1')
+            .attr('href', '#');
+
         function nextLogout() {
-            name.on('click', null);
-            action.text('logout').on('click', logout);
+            name
+                .on('click', logout)
+                .on('mouseover', function() {
+                    name.text('logout');
+                })
+                .on('mouseout', function() {
+                    context.user.details(function(err, d) {
+                        if (err) return;
+                        name.text(d.login);
+                    });
+                });
         }
 
         function login() {
@@ -23801,18 +23848,21 @@ module.exports = function(context) {
             nextLogin();
         }
 
+        function saveAction() {
+            saver(context);
+        }
+
         nextLogin();
 
         if (context.user.token()) {
             context.user.details(function(err, d) {
                 if (err) return;
                 name.text(d.login);
-                name.attr('href', d.html_url);
                 nextLogout();
             });
         }
     };
 };
 
-},{}]},{},[107])
+},{"../ui/saver.js":131}]},{},[107])
 ;

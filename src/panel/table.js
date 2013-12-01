@@ -15,8 +15,8 @@ module.exports = function(context) {
                 selection
                     .html('')
                     .append('div')
-                    .attr('class', 'blank-banner center')
-                    .text('no features');
+                    .attr('class', 'col12 pad2y center')
+                    .text('No features.');
             } else {
                 props = geojson.geometry ? [geojson.properties] :
                     geojson.features.map(getProperties);

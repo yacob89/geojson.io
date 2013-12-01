@@ -1,6 +1,22 @@
 /* Base Candidates */
 .pill.unround > * { border-radius:0; }
+.scroll { overflow: auto; }
+
+/* MapBox.js Candidate */
 .leaflet-container .button {color:#fff; }
+
+/* Feeling guilty with this one */
+.pad2r { padding-right:20px; }
+
+/* Hack */
+.unround .floppy { border-radius:3px 0 0 3px; }
+
+.user-nav {
+  width:180px;
+  margin:10px;
+  right:0;
+  left:auto;
+  }
 
 body, .container {
   position:absolute;
@@ -32,17 +48,6 @@ p.intro-hint {
   }
 p.intro-hint:hover {
   opacity:1;
-  }
-.CodeMirror {
-  position:absolute;
-  bottom:0;
-  right:0;
-  left:0;
-  top:0;
-  height:auto !important;
-  background:#f1f1f1;
-  font-family: 'Droid Sans Mono', sans-serif;
-  line-height:1.5em;
   }
 .error-marker {
   width:10px;
@@ -107,12 +112,6 @@ body.dragover .modal-message {
 .fail {
   font-size:11px;
   padding:5px;
-  }
-.blank-banner {
-  text-align:center;
-  font-size:20px;
-  padding:80px 20px;
-  color:#888;
   }
 textarea.full-width {
   box-sizing:border-box;
@@ -192,6 +191,170 @@ textarea.full-width {
 .marker-properties tr:nth-child(even) td {
   background-color:#f7f7f7;
   }
+
+/* Tooltips
+------------------------------------------------ */
+.tooltip {
+    position: absolute;
+    display: none;
+    color:#333;
+    text-align: left;
+    font-size: 12px;
+}
+
+.tooltip.in {
+    opacity: 0.8;
+    z-index: 1030;
+    height: auto;
+    display: block;
+}
+
+.tooltip.top {
+    margin-top: -20px;
+    text-align: center;
+}
+
+.tooltip.right {
+    margin-left: 20px;
+}
+
+.tooltip.bottom {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.tooltip.left {
+    margin-left: -20px;
+    text-align: right;
+}
+
+.tooltip-inner {
+    display: inline-block;
+    max-width: 200px;
+    min-width: 80px;
+    padding: 10px;
+    font-weight: normal;
+    background-color: white;
+}
+
+.tail {
+    width: 200px;
+    height: 400px;
+    pointer-events: none;
+    opacity: .8;
+    margin-top: -200px;
+    position: absolute;
+    background: transparent;
+}
+
+.tail::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    top: 50%;
+    right: -5px;
+    margin-top: -5px;
+    border-left-color: white;
+    border-width: 5px 0 5px 5px;
+}
+
+.tail div {
+    padding: 10px;
+    background: white;
+    position: absolute;
+    top: 180px;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+.left.tail::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    top: 50%;
+    left: -5px;
+    margin-top: -5px;
+    border-right-color: white;
+    border-width: 5px 5px 5px 0;
+}
+
+.tooltip-arrow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+}
+
+.tooltip.top .tooltip-arrow {
+    bottom: -5px;
+    left: 50%;
+    margin-left: -5px;
+    border-top-color: white;
+    border-width: 5px 5px 0;
+}
+
+.tooltip.right .tooltip-arrow {
+    top: 50%;
+    left: -5px;
+    margin-top: -5px;
+    border-right-color: white;
+    border-width: 5px 5px 5px 0;
+}
+
+.tooltip.left .tooltip-arrow {
+    top: 50%;
+    right: -5px;
+    margin-top: -5px;
+    border-left-color: white;
+    border-width: 5px 0 5px 5px;
+}
+
+.tooltip.bottom .tooltip-arrow {
+    top: -5px;
+    left: 50%;
+    margin-left: -5px;
+    border-bottom-color: white;
+    border-width: 0 5px 5px;
+}
+
+.keyhint-wrap {
+    background: #F6F6F6;
+    padding: 10px;
+    margin: 10px -10px -10px;
+}
+
+.tooltip-inner .keyhint {
+    font-size: 10px;
+    padding: 0 7px;
+    font-weight: bold;
+    display: inline-block;
+    border-radius: 2px;
+    border: 1px solid #CCC;
+    position: relative;
+    z-index: 1;
+    text-align: left;
+}
+
+.tooltip-inner .keyhint::after {
+    content: "";
+    position: absolute;
+    border-radius: 2px;
+    height: 10px;
+    width: 100%;
+    z-index: 0;
+    bottom: -4px;
+    left: -1px;
+    border: 1px solid #CCC;
+    border-top: 0;
+}
 
 /* GitHub browser
 ------------------------------------------------ */

@@ -15,7 +15,7 @@ module.exports = function(context) {
         var sources = [{
             title: 'Import',
             alt: 'CSV, KML, GPX, and other filetypes',
-            containerHeight: 'row6',
+            containerHeight: 'row7',
             action: clickImport
         }, {
             title: 'GitHub',

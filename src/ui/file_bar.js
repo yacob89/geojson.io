@@ -30,7 +30,7 @@ module.exports = function fileBar(context) {
             title: 'Edit',
             klass: 'pencil col6',
             action: function() {
-                context.container.call(data(context));
+                d3.select('#edit').classed('active', true);
             }
         }, {
             title: 'Add',

@@ -27,32 +27,38 @@ function ui(context) {
     function render(selection) {
         var container = init(selection);
 
-        var edit = container
-            .append('div')
-            .attr('class', 'module fill-white animate pin-bottom offcanvas-bottom col12 row6');
+        var edit = d3.select('#edit');
 
         var top = edit
             .append('div')
-            .attr('class', 'top');
+            .attr('class', 'col6 margin3 pad2y clearfix');
 
         var pane = edit
             .append('div')
-            .attr('class', 'pane');
+            .attr('class', 'col8 margin2 row10 scroll');
 
         top
             .append('div')
-            .attr('class', 'user fr pad1 deemphasize')
-            .call(userUi(context));
-
-        top
-            .append('div')
-            .attr('class', 'buttons')
+            .attr('class', 'tabs clearfix')
             .call(buttons(context, pane));
+
+        edit.append('a')
+            .attr('class', 'big quiet icon x pin-right')
+            .attr('href', '#')
+            .on('click', function() {
+                d3.event.preventDefault();
+                d3.select('.active.module').classed('active', false);
+            });
 
         container
             .append('div')
             .attr('class', 'col6 margin3 pin-top fill-white nav-bar')
             .call(file_bar(context));
+
+        container
+            .append('div')
+            .attr('class', 'pin-top center fill-white round user-nav')
+            .call(userUi(context));
 
         dnd(context);
 
