@@ -22793,7 +22793,14 @@ module.exports = function fileBar(context) {
         var filename = name.append('a')
             .attr('class', 'quiet')
             .attr('href', '#')
-            .text('unsaved');
+            .text('unsaved')
+            .on('click', function() {
+                if (this.text === 'unsaved') {
+                    d3.event.preventDefault();
+                } else {
+                    window.open(this.href);
+                }
+            });
 
         var link = name.append('a')
             .attr('target', '_blank')
@@ -22851,7 +22858,6 @@ module.exports = function fileBar(context) {
             filename
                 .text(path ? path : 'unsaved')
                 .attr('href', data.url)
-                .attr('target', '_blank')
                 .classed('deemphasize', context.data.dirty);
         }
 
