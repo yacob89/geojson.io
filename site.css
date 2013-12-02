@@ -120,6 +120,12 @@ body, .container {
   background: rgba(0,0,0,.15);
 }
 
+/* GitHub browser
+------------------------------------------------ */
+.repos .item {
+  display:block;
+  }
+
 /* Data table
 ------------------------------------------------ */
 .data-table .controls {
