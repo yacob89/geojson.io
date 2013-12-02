@@ -5,6 +5,9 @@ module.exports = function(context) {
     function render(selection) {
 
         selection.html('');
+        var sel = selection
+            .append('div')
+            .attr('class', 'col12 row7 prose data-table');
 
         function rerender() {
             var geojson = context.data.get('map');
@@ -12,16 +15,16 @@ module.exports = function(context) {
 
             if (!geojson || !geojson.geometry && 
                 (!geojson.features || !geojson.features.length)) {
-                selection
+                sel
                     .html('')
                     .append('div')
-                    .attr('class', 'col12 pad2y center')
+                    .attr('class', 'col12 center empty-features')
                     .text('No features.');
             } else {
                 props = geojson.geometry ? [geojson.properties] :
                     geojson.features.map(getProperties);
-                selection.select('.blank-banner').remove();
-                selection
+                sel.select('.empty-features').remove();
+                sel
                     .data([props])
                     .call(metatable()
                         .on('change', function(row, i) {

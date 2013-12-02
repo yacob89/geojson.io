@@ -20,8 +20,13 @@ module.exports = function(context) {
     }
 
     function render(selection) {
-        var textarea = selection
+
+        var sel = selection
             .html('')
+            .append('div')
+            .attr('class', 'keyline-all col10 margin1');
+
+        var textarea = sel
             .append('textarea');
 
         var editor = CodeMirror.fromTextArea(textarea.node(), {

@@ -6,7 +6,7 @@ module.exports = function(context) {
         var area = selection
             .html('')
             .append('div')
-            .attr('class', 'pad2 prose')
+            .attr('class', 'pad2 col8 margin2 row7 scroll keyline-all prose')
             .html(fs.readFileSync('data/help.html'));
     }
 

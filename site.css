@@ -9,16 +9,15 @@
 /* Feeling guilty with this one */
 .pad2r { padding-right:20px; }
 
-.user-nav .user-actions a:hover {
-  background:#f8f8f8;
-  }
-
 .user-nav {
   width:180px;
   margin:10px;
   right:0;
   left:auto;
   }
+  .user-nav .user-actions a:hover {
+    background:#f8f8f8;
+    }
 
 body, .container {
   position:absolute;
@@ -40,15 +39,14 @@ body, .container {
   margin-top:10px;
   }
 
-p.intro-hint {
+.intro-hint {
   margin:10px auto;
   opacity:0.5;
   font-size:small;
   border-top:1px solid #e0e0e0;
   border-bottom:1px solid #e0e0e0;
-  border-radius:1px;
   }
-p.intro-hint:hover {
+.intro-hint:hover {
   opacity:1;
   }
 .error-marker {
@@ -90,49 +88,17 @@ p.intro-hint:hover {
 .scrollable {
   overflow:auto;
   }
-.controls {
-  padding-bottom:20px;
-  }
-.controls button {
-  border:1px solid #ccc;
-  }
-.controls button:hover {
-  background:#fff;
-  }
-body.dragover {
+.dragover {
   opacity:0.6;
   }
 .modal-message {
   display:none;
   }
-body.dragover .modal-message {
+.dragover .modal-message {
   position:fixed;
   left:50%;
   top:50%;
   text-align:center;
-  }
-.fail {
-  font-size:11px;
-  padding:5px;
-  }
-textarea.full-width {
-  box-sizing:border-box;
-  width:100%;
-  padding:5px;
-  height:60px;
-  border:1px solid #ccc;
-  border-radius:2px;
-  font:inherit;
-  }
-.clickable:hover,
-.clickable.active {
-  background:#eee;
-  }
-.icon-spaced {
-  margin-right:5px;
-  }
-.clickable {
-  cursor:pointer;
   }
 
 /* Custom Scrollbar
@@ -153,6 +119,46 @@ textarea.full-width {
 .module *::-webkit-scrollbar:hover {
   background: rgba(0,0,0,.15);
 }
+
+/* Data table
+------------------------------------------------ */
+.data-table .controls {
+  text-align:center; 
+  margin-bottom:20px;
+  clear:left;
+  }
+  .data-table .controls button {
+    display:block;
+    width:16.6666%;
+    margin-left:41.6666%%;
+    }
+
+.data-table {
+  font-size:12px;
+  line-height:20px;
+  }
+.data-table table {
+  width:83.3333%;
+  overflow:auto;
+  display:block;
+  height:240px;
+  margin-left:08.3333%;
+  }
+.data-table table button {
+  display:inline;
+  background:transparent;
+  padding:0;
+  color:#3887be;
+  margin:0 0 2px 5px;
+  height:auto;
+  visibility:hidden;
+  }
+.data-table table th:hover button {
+  visibility:visible;
+  }
+.data-table input {
+  border:none;
+  }
 
 /* Leaflet draw plugin
 ------------------------------------------------ */
@@ -236,7 +242,7 @@ textarea.full-width {
   font-family:Menlo, Bitstream Vera Sans Mono, Monaco, Consolas, monospace;
   font-size:12px;
   line-height:20px;
-  height:358px;
+  height:295px;
   }
 
 /* Prose Bright Theme
@@ -285,38 +291,6 @@ textarea.full-width {
 
 .cm-s-eclipse span.cm-em         { font-style:italic; }
 .cm-s-eclipse span.cm-strong     { font-weight:bold; }
-
-/* Markers
------------------------------------------------- */
-.marker-properties-limit {
-  overflow:auto;
-  max-height:150px;
-  max-width:500px;
-  min-width:240px;
-  }
-.marker-properties {
-  border-collapse:collapse;
-  font-size:11px;
-  border:1px solid #ccc;
-  margin:0;
-  }
-.marker-properties td,
-.marker-properties th {
-  white-space:nowrap;
-  border:1px solid #ccc;
-  }
-.marker-properties.display td,
-.marker-properties.display th {
-  padding:5px 10px;
-  }
-.marker-properties tr:last-child td,
-.marker-properties tr:last-child th {
-  border-bottom:none;
-  }
-.marker-properties tr:nth-child(even) th,
-.marker-properties tr:nth-child(even) td {
-  background-color:#f7f7f7;
-  }
 
 /* Tooltips
 ------------------------------------------------ */
@@ -465,77 +439,3 @@ textarea.full-width {
     border:1px solid #CCC;
     border-top:0;
     }
-
-/* GitHub browser
------------------------------------------------- */
-.browser .item {
-  transition:all 100ms ease-in;
-  margin-right:5px;
-  margin-bottom:5px;
-  -webkit-transition:all 100ms ease-in;
-  cursor:pointer;
-  border:1px solid #eee;
-  width:202px;
-  height:202px;
-  box-sizing:border-box;
-  position:relative;
-  }
-.browser .item:hover {
-  border:1px solid #777;
-  }
-.browser .item .overlay {
-  position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  padding:5px;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-  overflow:hidden;
-  background:rgba(255, 255, 255, 0.1);
-  -webkit-transition:all 100ms ease-in;
-  transition:all 100ms ease-in;
-  }
-.browser .item:hover .overlay {
-  background:rgba(255, 255, 255, 0.9);
-  }
-.static-map-preview canvas,
-.static-map-preview img {
-  position:absolute;
-  }
-
-/* repos */
-.miller-wrap {
-  overflow:auto;
-  white-space:nowrap;
-  }
-.miller-column {
-  box-sizing:border-box;
-  width:200px;
-  border-right:1px solid #ccc;
-  float:left;
-  }
-.miller-column .item {
-  border-bottom:1px solid #ccc;
-  -webkit-transition:all 100ms ease-in;
-  transition:all 100ms ease-in;
-  cursor:pointer;
-  line-height:35px;
-  font-size:12px;
-  padding:0 10px;
-  box-sizing:border-box;
-  height:35px;
-  }
-.miller-column .item:last-child {
-  border:none;
-  }
-.miller-column .item:hover,
-.miller-column .item.active {
-  background:#eee;
-  }
-.miller-column .item.tree {
-  background:#F3FCFF;
-  }
-.miller-outer {
-  overflow:auto;
-  }
