@@ -3,16 +3,28 @@ module.exports = function(context) {
         var sel = d3.select(e.popup._contentNode);
 
         sel.selectAll('.cancel')
-            .on('click', clickClose);
+            .on('click', function() {
+                d3.event.preventDefault();
+                clickClose();
+            });
 
         sel.selectAll('.save')
-            .on('click', saveFeature);
+            .on('click', function() {
+                d3.event.preventDefault();
+                saveFeature();
+            });
 
         sel.selectAll('.add')
-            .on('click', addRow);
+            .on('click', function() {
+                d3.event.preventDefault();
+                addRow();
+            });
 
         sel.selectAll('.delete-invert')
-            .on('click', removeFeature);
+            .on('click', function() {
+                d3.event.preventDefault();
+                removeFeature();
+            });
 
         function clickClose() {
             context.map.closePopup(e.popup);
@@ -46,15 +58,18 @@ module.exports = function(context) {
         }
 
         function addRow() {
-            var tr = sel.select('tbody')
-                .append('tr');
+            var row = sel.select('ul')
+                .append('li')
+                .attr('class', 'col12');
 
-            tr.append('th')
-                .append('input')
+            row.append('input')
+                .attr('placeholder', 'Key')
+                .attr('class', 'col6')
                 .attr('type', 'text');
 
-            tr.append('td')
-                .append('input')
+            row.append('input')
+                .attr('placeholder', 'Value')
+                .attr('class', 'col6')
                 .attr('type', 'text');
         }
     };

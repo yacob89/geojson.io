@@ -10,12 +10,12 @@ module.exports = function(context) {
 
         var sel = selection
             .append('div')
-            .attr('class', 'col12 center animate');
+            .attr('class', 'col12 center animate pad2y');
 
         if (importSupport) {
             var button = sel.append('a')
                 .attr('href', '#')
-                .attr('class', 'button icon plus col4 margin4 space-bottom')
+                .attr('class', 'button icon plus col2 margin5 space-bottom')
                 .text('Import')
                 .on('click', function() {
                     d3.event.preventDefault();

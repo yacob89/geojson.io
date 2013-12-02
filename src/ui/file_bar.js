@@ -11,8 +11,9 @@ module.exports = function fileBar(context) {
         var name = selection.append('div')
             .attr('class', 'col8 center pad1 small space strong quiet');
 
-        var filename = name.append('span')
-            .attr('class', 'filename')
+        var filename = name.append('a')
+            .attr('class', 'quiet')
+            .attr('href', '#')
             .text('unsaved');
 
         var link = name.append('a')
@@ -44,20 +45,6 @@ module.exports = function fileBar(context) {
             d3.select('.module.active').classed('active', false);
         }
 
-        function sourceIcon(type) {
-            if (type == 'github') return 'icon-github';
-            else if (type == 'gist') return 'icon-github-alt';
-            else return 'icon-file-alt';
-        }
-
-        function saveNoun(_) {
-
-            // TODO Rework this when save is moved.
-            nav.filter(function(b) {
-                return b.title === 'Save';
-            }).select('span.title').text(_);
-        }
-
         var nav = selection.append('div')
             .attr('class', 'col4 row1 pill unround')
             .selectAll('a')
@@ -84,11 +71,9 @@ module.exports = function fileBar(context) {
                 path = data.path;
             filename
                 .text(path ? path : 'unsaved')
-                .classed('deemphasize', context.data.dirty);
-            filetype
                 .attr('href', data.url)
-                .attr('class', sourceIcon(type));
-            saveNoun(type == 'github' ? 'Commit' : 'Save');
+                .attr('target', '_blank')
+                .classed('deemphasize', context.data.dirty);
         }
 
     }

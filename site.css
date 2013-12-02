@@ -3,7 +3,8 @@
 .scroll { overflow: auto; }
 
 /* MapBox.js Candidate */
-.leaflet-container .button {color:#fff; }
+.leaflet-container .button,
+.leaflet-container .button:hover { color:#fff; }
 
 /* Feeling guilty with this one */
 .pad2r { padding-right:20px; }
@@ -134,6 +135,25 @@ textarea.full-width {
   cursor:pointer;
   }
 
+/* Custom Scrollbar
+------------------------------------------------ */
+.module *::-webkit-scrollbar {
+  width:8px;
+  height:8px;
+  border-left:0;
+  background: rgba(0,0,0,.1);
+  }
+.module *::-webkit-scrollbar-track {
+  background:none;
+  }
+.module *::-webkit-scrollbar-thumb {
+  background:rgba(0,0,0,.1);
+  border-radius: 0;
+  }
+.module *::-webkit-scrollbar:hover {
+  background: rgba(0,0,0,.15);
+}
+
 /* Leaflet draw plugin
 ------------------------------------------------ */
 .leaflet-control.leaflet-draw {
@@ -216,6 +236,7 @@ textarea.full-width {
   font-family:Menlo, Bitstream Vera Sans Mono, Monaco, Consolas, monospace;
   font-size:12px;
   line-height:20px;
+  height:358px;
   }
 
 /* Prose Bright Theme
@@ -271,6 +292,7 @@ textarea.full-width {
   overflow:auto;
   max-height:150px;
   max-width:500px;
+  min-width:240px;
   }
 .marker-properties {
   border-collapse:collapse;
@@ -299,59 +321,51 @@ textarea.full-width {
 /* Tooltips
 ------------------------------------------------ */
 .tooltip {
-    position: absolute;
-    display: none;
-    color:#333;
-    text-align: left;
-    font-size: 12px;
-}
-
+  position:absolute;
+  display:none;
+  text-align:left;
+  font-size:12px;
+  line-height:20px;
+  }
 .tooltip.in {
-    opacity: 0.8;
-    z-index: 1030;
-    height: auto;
-    display: block;
-}
-
+  opacity:0.8;
+  z-index:1030;
+  height:auto;
+  display:block;
+  }
 .tooltip.top {
-    margin-top: -20px;
-    text-align: center;
-}
-
+  margin-top:-20px;
+  text-align:center;
+  }
 .tooltip.right {
-    margin-left: 20px;
-}
-
+  margin-left:20px;
+  }
 .tooltip.bottom {
-    margin-top: 20px;
-    text-align: center;
-}
-
+  margin-top:20px;
+  text-align:center;
+  }
 .tooltip.left {
-    margin-left: -20px;
-    text-align: right;
-}
-
+  margin-left:-20px;
+  text-align:right;
+  }
 .tooltip-inner {
-    display: inline-block;
-    max-width: 200px;
-    min-width: 80px;
-    padding: 10px;
-    font-weight: normal;
-    background-color: white;
-}
-
+  display:inline-block;
+  max-width:200px;
+  min-width:80px;
+  padding:10px;
+  font-weight:normal;
+  background-color:white;
+  }
 .tail {
-    width: 200px;
-    height: 400px;
-    pointer-events: none;
-    opacity: .8;
-    margin-top: -200px;
-    position: absolute;
-    background: transparent;
-}
-
-.tail::after {
+  background:transparent;
+  position:absolute;
+  width:200px;
+  height:400px;
+  pointer-events:none;
+  opacity:0.8;
+  margin-top:-200px;
+  }
+  .tail:after {
     content: "";
     position: absolute;
     width: 0;
@@ -363,102 +377,94 @@ textarea.full-width {
     margin-top: -5px;
     border-left-color: white;
     border-width: 5px 0 5px 5px;
-}
+    }
 
 .tail div {
-    padding: 10px;
-    background: white;
-    position: absolute;
-    top: 180px;
-    left: 0;
-    right: 0;
-    margin: auto;
-}
-
-.left.tail::after {
-    content: "";
-    position: absolute;
-    width: 0;
-    height: 0;
-    border-color: transparent;
-    border-style: solid;
-    top: 50%;
-    left: -5px;
-    margin-top: -5px;
-    border-right-color: white;
-    border-width: 5px 5px 5px 0;
-}
-
+  background:white;
+  position:absolute;
+  padding:10px;
+  top:180px;
+  left:0;
+  right:0;
+  margin:auto;
+  }
+.left.tail:after {
+  content:'';
+  position:absolute;
+  width:0;
+  height:0;
+  border-color:transparent;
+  border-style:solid;
+  top:50%;
+  left:-5px;
+  margin-top:-5px;
+  border-right-color:white;
+  border-width:5px 5px 5px 0;
+  }
 .tooltip-arrow {
-    position: absolute;
-    width: 0;
-    height: 0;
-    border-color: transparent;
-    border-style: solid;
-}
-
+  position:absolute;
+  width:0;
+  height:0;
+  border-color:transparent;
+  border-style:solid;
+  }
 .tooltip.top .tooltip-arrow {
-    bottom: -5px;
-    left: 50%;
-    margin-left: -5px;
-    border-top-color: white;
-    border-width: 5px 5px 0;
-}
-
+  border-top-color:white;
+  bottom:-5px;
+  left:50%;
+  margin-left:-5px;
+  border-width:5px 5px 0;
+  }
 .tooltip.right .tooltip-arrow {
-    top: 50%;
-    left: -5px;
-    margin-top: -5px;
-    border-right-color: white;
-    border-width: 5px 5px 5px 0;
-}
-
+  top:50%;
+  left:-5px;
+  margin-top:-5px;
+  border-right-color:white;
+  border-width:5px 5px 5px 0;
+  }
 .tooltip.left .tooltip-arrow {
-    top: 50%;
-    right: -5px;
-    margin-top: -5px;
-    border-left-color: white;
-    border-width: 5px 0 5px 5px;
-}
-
+  top:50%;
+  right:-5px;
+  margin-top:-5px;
+  border-left-color:white;
+  border-width:5px 0 5px 5px;
+  }
 .tooltip.bottom .tooltip-arrow {
-    top: -5px;
-    left: 50%;
-    margin-left: -5px;
-    border-bottom-color: white;
-    border-width: 0 5px 5px;
-}
+  top:-5px;
+  left:50%;
+  margin-left:-5px;
+  border-bottom-color:white;
+  border-width:0 5px 5px;
+  }
 
 .keyhint-wrap {
-    background: #F6F6F6;
-    padding: 10px;
-    margin: 10px -10px -10px;
-}
-
+  background:#F6F6F6;
+  padding:10px;
+  margin:10px -10px -10px;
+  }
 .tooltip-inner .keyhint {
-    font-size: 10px;
-    padding: 0 7px;
-    font-weight: bold;
-    display: inline-block;
-    border-radius: 2px;
-    border: 1px solid #CCC;
-    position: relative;
-    z-index: 1;
-    text-align: left;
-}
-
-.tooltip-inner .keyhint::after {
-    content: "";
-    position: absolute;
-    border-radius: 2px;
-    height: 10px;
-    width: 100%;
-    z-index: 0;
-    bottom: -4px;
-    left: -1px;
-    border: 1px solid #CCC;
-    border-top: 0;
-}
+  font-size:12px;
+  padding:0 7px;
+  font-weight:bold;
+  display:inline-block;
+  border-radius:2px;
+  border:1px solid #CCC;
+  position:relative;
+  z-index:1;
+  text-align:left;
+  }
+  .tooltip-inner .keyhint:after {
+    content:'';
+    position:absolute;
+    border-radius:2px;
+    height:10px;
+    width:100%;
+    z-index:0;
+    bottom:-4px;
+    left:-1px;
+    border:1px solid #CCC;
+    border-top:0;
+    }
 
 /* GitHub browser
 ------------------------------------------------ */

@@ -21832,16 +21832,28 @@ module.exports = function(context) {
         var sel = d3.select(e.popup._contentNode);
 
         sel.selectAll('.cancel')
-            .on('click', clickClose);
+            .on('click', function() {
+                d3.event.preventDefault();
+                clickClose();
+            });
 
         sel.selectAll('.save')
-            .on('click', saveFeature);
+            .on('click', function() {
+                d3.event.preventDefault();
+                saveFeature();
+            });
 
         sel.selectAll('.add')
-            .on('click', addRow);
+            .on('click', function() {
+                d3.event.preventDefault();
+                addRow();
+            });
 
         sel.selectAll('.delete-invert')
-            .on('click', removeFeature);
+            .on('click', function() {
+                d3.event.preventDefault();
+                removeFeature();
+            });
 
         function clickClose() {
             context.map.closePopup(e.popup);
@@ -21875,15 +21887,18 @@ module.exports = function(context) {
         }
 
         function addRow() {
-            var tr = sel.select('tbody')
-                .append('tr');
+            var row = sel.select('ul')
+                .append('li')
+                .attr('class', 'col12');
 
-            tr.append('th')
-                .append('input')
+            row.append('input')
+                .attr('placeholder', 'Key')
+                .attr('class', 'col6')
                 .attr('type', 'text');
 
-            tr.append('td')
-                .append('input')
+            row.append('input')
+                .attr('placeholder', 'Value')
+                .attr('class', 'col6')
                 .attr('type', 'text');
         }
     };
@@ -22210,7 +22225,7 @@ module.exports = function(context) {
         var area = selection
             .html('')
             .append('div')
-            .attr('class', 'prose')
+            .attr('class', 'pad2 prose')
             .html("<h2>Help</h2>\n\n<p>New here? <strong>geojson.io</strong> is a quick, simple tool for creating,\nviewing, and sharing maps. geojson.io is named after <a href='http://geojson.org/' target='_blank'>GeoJSON</a>,\nan open source data format, and it supports GeoJSON in all ways - but also\naccepts KML, GPX, CSV, TopoJSON, and other formats.</p>\n\n<p>Need extra help or see a bug? <a target='_blank' href='https://github.com/mapbox/geojson.io/issues?state=open'>Open an issue\n    on geojson.io's issue tracker.</a>\n\n<h3>I've got data</h3>\n\n<p>If you have data, like a KML, GeoJSON, or CSV file, just drag &amp; drop\nit onto the page or click 'Open' and 'Import' - your data should appear on\nthe map!</p>\n\n<h3>I want to draw features</h3>\n\n<p>Click the drawing tools on the left-hand side to draw points, polygons,\nlines and rectangles. After you're done drawing the shapes, you can add\ninformation to each feature by clicking on it, editing the feature's properties,\nand clicking 'Save'.</p>\n\n<p>Properties in GeoJSON are stored as 'key value pairs' - so, for instance,\nif you wanted to add a name to each feature, type 'name' in the first table\nfield, and the name of the feature in the second.</p>\n\n<h3>I want to use my map everywhere</h3>\n\n<p>You can share maps in quite a few ways! If you save your map here, the URL\nof this page will update and you can link send friends the link to share\nthe map, or you can click 'Download' to grab the raw GeoJSON data and use\nit in other software, like TileMill or Leaflet.</p>\n\n<h3>I'm a coder</h3>\n\n<p><a href='https://github.com/mapbox/geojson.io#goes-great-with' target='_blank'>geojson.io has an array of cli tools</a>\nthat make it easy to go from a GeoJSON file on your computer to geojson.io.\n\n<h3>Protips?</h3>\n\n<ul>\n    <li><strong>cmd+s</strong>: save map to github gists\n    <li><strong>cmd+a</strong>: download map as geojson\n    <li><strong>arrow keys</strong>: navigate the map\n</ul>\n\n<h3>Privacy &amp; License Issues</h3>\n\n<ul>\n    <li><strong>Clicking save</strong> by default saves to a private\n    GitHub Gist - so it will only be accessible to people you share the URL\n    with, and creating it won't appear in your GitHub timeline.\n    <li><strong>The data you create and modify in geojson.io</strong> doesn't\n    acquire any additional license: if it's secret and copyrighted, it will remain\n    that way - it doesn't have to be public or open source.\n</ul>\n");
     }
 
@@ -22594,7 +22609,7 @@ function ui(context) {
 
         var pane = edit
             .append('div')
-            .attr('class', 'col8 margin2 row10 scroll');
+            .attr('class', 'col8 keyline-all margin2 row9 scroll');
 
         top
             .append('div')
@@ -22775,8 +22790,9 @@ module.exports = function fileBar(context) {
         var name = selection.append('div')
             .attr('class', 'col8 center pad1 small space strong quiet');
 
-        var filename = name.append('span')
-            .attr('class', 'filename')
+        var filename = name.append('a')
+            .attr('class', 'quiet')
+            .attr('href', '#')
             .text('unsaved');
 
         var link = name.append('a')
@@ -22808,20 +22824,6 @@ module.exports = function fileBar(context) {
             d3.select('.module.active').classed('active', false);
         }
 
-        function sourceIcon(type) {
-            if (type == 'github') return 'icon-github';
-            else if (type == 'gist') return 'icon-github-alt';
-            else return 'icon-file-alt';
-        }
-
-        function saveNoun(_) {
-
-            // TODO Rework this when save is moved.
-            nav.filter(function(b) {
-                return b.title === 'Save';
-            }).select('span.title').text(_);
-        }
-
         var nav = selection.append('div')
             .attr('class', 'col4 row1 pill unround')
             .selectAll('a')
@@ -22848,11 +22850,9 @@ module.exports = function fileBar(context) {
                 path = data.path;
             filename
                 .text(path ? path : 'unsaved')
-                .classed('deemphasize', context.data.dirty);
-            filetype
                 .attr('href', data.url)
-                .attr('class', sourceIcon(type));
-            saveNoun(type == 'github' ? 'Commit' : 'Save');
+                .attr('target', '_blank')
+                .classed('deemphasize', context.data.dirty);
         }
 
     }
@@ -23031,12 +23031,12 @@ module.exports = function(context) {
 
         var sel = selection
             .append('div')
-            .attr('class', 'col12 center animate');
+            .attr('class', 'col12 center animate pad2y');
 
         if (importSupport) {
             var button = sel.append('a')
                 .attr('href', '#')
-                .attr('class', 'button icon plus col4 margin4 space-bottom')
+                .attr('class', 'button icon plus col2 margin5 space-bottom')
                 .text('Import')
                 .on('click', function() {
                     d3.event.preventDefault();
@@ -23244,7 +23244,7 @@ function geojsonToLayer(geojson, layer) {
 function bindPopup(l) {
 
     var properties = l.toGeoJSON().properties,
-        table = '',
+        row = '',
         info = '';
 
     if (!properties) return;
@@ -23252,8 +23252,10 @@ function bindPopup(l) {
     if (!Object.keys(properties).length) properties = { '': '' };
 
     for (var key in properties) {
-        table += '<tr><th><input type="text" value="' + key + '"' + (!writable ? ' readonly' : '') + ' /></th>' +
-            '<td><input type="text" value="' + properties[key] + '"' + (!writable ? ' readonly' : '') + ' /></td></tr>';
+        row += '<li class="col12">' +
+                '<input class="col6" type="text" placeholder="key" value="' + key + '"' + (!writable ? ' readonly' : '') + ' />' +
+                '<input class="col6" type="text" placeholder="value" value="' + properties[key] + '"' + (!writable ? ' readonly' : '') + ' />' +
+               '</li>';
     }
 
     if (l.feature && l.feature.geometry) {
@@ -23270,14 +23272,15 @@ function bindPopup(l) {
     }
 
     var content = '<div class="clearfix">' +
-        '<div class="marker-info">' + info + ' </div>' +
-        '<div class="marker-properties-limit"><table class="marker-properties">' + table + '</table></div>' +
+        '<div class="marker-info small strong quiet">' + info + ' </div>' +
+        '<ul class="marker-properties-limit col12">' + row + '</ul>' +
         (writable ? '<br /><div class="clearfix col12">' +
-            '<div class="buttons-joined fl">' +
-            '<button class="add major">add row</button> ' +
-            '<button class="save major">save</button> ' +
-            '<button class="major cancel">cancel</button></div>' +
-            '<div class="fr clear-buttons"><button class="delete-invert"><span class="icon-remove-sign"></span> remove</button></div></div>' : '') +
+            '<div class="pill col12">' +
+            '<a href="#" class="button col3 add major">Add row</a>' +
+            '<a href="#" class="button col3 save major">Save</a>' +
+            '<a href="#" class="button col3 major cancel">Cancel</a>' +
+            '<a href="#" class="button col3 delete-invert">Remove</a>' +
+            '</div>' : '') +
         '</div>';
 
     l.bindPopup(L.popup({

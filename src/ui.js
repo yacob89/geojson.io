@@ -35,7 +35,7 @@ function ui(context) {
 
         var pane = edit
             .append('div')
-            .attr('class', 'col8 margin2 row10 scroll');
+            .attr('class', 'col8 keyline-all margin2 row9 scroll');
 
         top
             .append('div')

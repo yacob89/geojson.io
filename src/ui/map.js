@@ -93,7 +93,7 @@ function geojsonToLayer(geojson, layer) {
 function bindPopup(l) {
 
     var properties = l.toGeoJSON().properties,
-        table = '',
+        row = '',
         info = '';
 
     if (!properties) return;
@@ -101,8 +101,10 @@ function bindPopup(l) {
     if (!Object.keys(properties).length) properties = { '': '' };
 
     for (var key in properties) {
-        table += '<tr><th><input type="text" value="' + key + '"' + (!writable ? ' readonly' : '') + ' /></th>' +
-            '<td><input type="text" value="' + properties[key] + '"' + (!writable ? ' readonly' : '') + ' /></td></tr>';
+        row += '<li class="col12">' +
+                '<input class="col6" type="text" placeholder="key" value="' + key + '"' + (!writable ? ' readonly' : '') + ' />' +
+                '<input class="col6" type="text" placeholder="value" value="' + properties[key] + '"' + (!writable ? ' readonly' : '') + ' />' +
+               '</li>';
     }
 
     if (l.feature && l.feature.geometry) {
@@ -119,14 +121,15 @@ function bindPopup(l) {
     }
 
     var content = '<div class="clearfix">' +
-        '<div class="marker-info">' + info + ' </div>' +
-        '<div class="marker-properties-limit"><table class="marker-properties">' + table + '</table></div>' +
+        '<div class="marker-info small strong quiet">' + info + ' </div>' +
+        '<ul class="marker-properties-limit col12">' + row + '</ul>' +
         (writable ? '<br /><div class="clearfix col12">' +
-            '<div class="buttons-joined fl">' +
-            '<button class="add major">add row</button> ' +
-            '<button class="save major">save</button> ' +
-            '<button class="major cancel">cancel</button></div>' +
-            '<div class="fr clear-buttons"><button class="delete-invert"><span class="icon-remove-sign"></span> remove</button></div></div>' : '') +
+            '<div class="pill col12">' +
+            '<a href="#" class="button col3 add major">Add row</a>' +
+            '<a href="#" class="button col3 save major">Save</a>' +
+            '<a href="#" class="button col3 major cancel">Cancel</a>' +
+            '<a href="#" class="button col3 delete-invert">Remove</a>' +
+            '</div>' : '') +
         '</div>';
 
     l.bindPopup(L.popup({
