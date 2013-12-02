@@ -84,9 +84,9 @@ function ui(context) {
             if (gj && gj.features) {
                 context.data.mergeFeatures(gj.features);
                 if (warning) {
-                    flash(context.container, warning.message);
+                    flash(warning.message);
                 } else {
-                    flash(context.container, 'Imported ' + gj.features.length + ' features.')
+                    flash('Imported ' + gj.features.length + ' features.')
                         .classed('success', 'true');
                 }
                 zoomextent(context);

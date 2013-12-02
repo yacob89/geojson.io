@@ -13,7 +13,7 @@ module.exports = function(context) {
         if (err) {
             message = JSON.parse(err.responseText).message
                 .replace(url, '<a href="$&">$&</a>');
-            return flash(context.container, message);
+            return flash(message);
         }
 
         context.data.parse(d);
@@ -28,7 +28,7 @@ module.exports = function(context) {
             location.hash = '';
             zoomextent(context);
         } catch(e) {
-            return flash(context.container, 'Could not parse JSON');
+            return flash('Could not parse JSON');
         }
     }
 
@@ -45,7 +45,7 @@ module.exports = function(context) {
         }
 
         function onerror() {
-            return flash(context.container, 'Could not load external file. External files must be served with CORS and be valid GeoJSON.');
+            return flash('Could not load external file. External files must be served with CORS and be valid GeoJSON.');
         }
     }
 

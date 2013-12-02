@@ -21522,7 +21522,7 @@ module.exports = function(context) {
             location.hash = '';
             zoomextent(context);
         } catch(e) {
-            return flash(context.container, 'Could not parse JSON');
+            return flash('Could not parse JSON');
         }
     }
 
@@ -21539,7 +21539,7 @@ module.exports = function(context) {
         }
 
         function onerror() {
-            return flash(context.container, 'Could not load external file. External files must be served with CORS and be valid GeoJSON.');
+            return flash('Could not load external file. External files must be served with CORS and be valid GeoJSON.');
         }
     }
 
@@ -22736,9 +22736,9 @@ function ui(context) {
             if (gj && gj.features) {
                 context.data.mergeFeatures(gj.features);
                 if (warning) {
-                    flash(context.container, warning.message);
+                    flash(warning.message);
                 } else {
-                    flash(context.container, 'Imported ' + gj.features.length + ' features.')
+                    flash('Imported ' + gj.features.length + ' features.')
                         .classed('success', 'true');
                 }
                 zoomextent(context);
@@ -22815,20 +22815,20 @@ module.exports = function(context) {
         .attr('dropzone', 'copy')
         .on('drop.import', readDrop(function(err, gj, warning) {
             if (err && err.message) {
-                flash(context.container, err.message)
+                flash(err.message)
                     .classed('error', 'true');
             }
             if (err && err.type === 'geocode') {
                 context.container.select('.icon-folder-open-alt')
                     .trigger('click');
-                flash(context.container, 'This file requires geocoding. Click Import to geocode it')
+                flash('This file requires geocoding. Click Import to geocode it')
                     .classed('error', 'true');
             } else if (gj && gj.features) {
                 context.data.mergeFeatures(gj.features);
                 if (warning) {
-                    flash(context.container, warning.message);
+                    flash(warning.message);
                 } else {
-                    flash(context.container, 'Imported ' + gj.features.length + ' features.')
+                    flash('Imported ' + gj.features.length + ' features.')
                         .classed('success', 'true');
                 }
                 zoomextent(context);
@@ -22873,7 +22873,6 @@ module.exports = function fileBar(context) {
             .attr('href', '#')
             .text('unsaved')
             .on('click', function() {
-                d3.event.preventDefault();
                 if (this.text === 'unsaved') {
                     d3.event.preventDefault();
                 } else {
@@ -23161,15 +23160,15 @@ module.exports = function(context) {
                 if (err.type === 'geocode') {
                     wrap.call(geocode(context), err.raw);
                 } else if (err.message) {
-                    flash(context.container, err.message)
+                    flash(err.message)
                         .classed('error', 'true');
                 }
             } else if (gj && gj.features) {
                 context.data.mergeFeatures(gj.features);
                 if (warning) {
-                    flash(context.container, warning.message);
+                    flash(warning.message);
                 } else {
-                    flash(context.container, 'Imported ' + gj.features.length + ' features.')
+                    flash('Imported ' + gj.features.length + ' features.')
                         .classed('success', 'true');
                 }
                 zoomextent(context);
@@ -23456,7 +23455,7 @@ module.exports = function(context) {
     if (d3.event) d3.event.preventDefault();
 
     function success(err, res) {
-        if (err) return flash(context.container, err.toString());
+        if (err) return flash(err.toString());
 
         var message,
           url,
@@ -23475,7 +23474,7 @@ module.exports = function(context) {
             path = res.commit.sha.substring(0,10);
         }
 
-        flash(context.container, message + '<a href="' + url + '">' + path + '</a>');
+        flash(message + '<a href="' + url + '">' + path + '</a>');
 
         context.container.select('.map').classed('loading', false);
         context.data.parse(res);
@@ -23487,7 +23486,7 @@ module.exports = function(context) {
         type = context.data.get('type');
 
     if (!features) {
-        return flash(context.container, 'Add a feature to the map to save it');
+        return flash('Add a feature to the map to save it');
     }
 
     context.container.select('.map').classed('loading', true);

@@ -55,15 +55,15 @@ module.exports = function(context) {
                 if (err.type === 'geocode') {
                     wrap.call(geocode(context), err.raw);
                 } else if (err.message) {
-                    flash(context.container, err.message)
+                    flash(err.message)
                         .classed('error', 'true');
                 }
             } else if (gj && gj.features) {
                 context.data.mergeFeatures(gj.features);
                 if (warning) {
-                    flash(context.container, warning.message);
+                    flash(warning.message);
                 } else {
-                    flash(context.container, 'Imported ' + gj.features.length + ' features.')
+                    flash('Imported ' + gj.features.length + ' features.')
                         .classed('success', 'true');
                 }
                 zoomextent(context);

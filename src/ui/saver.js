@@ -5,7 +5,7 @@ module.exports = function(context) {
     if (d3.event) d3.event.preventDefault();
 
     function success(err, res) {
-        if (err) return flash(context.container, err.toString());
+        if (err) return flash(err.toString());
 
         var message,
           url,
@@ -24,7 +24,7 @@ module.exports = function(context) {
             path = res.commit.sha.substring(0,10);
         }
 
-        flash(context.container, message + '<a href="' + url + '">' + path + '</a>');
+        flash(message + '<a href="' + url + '">' + path + '</a>');
 
         context.container.select('.map').classed('loading', false);
         context.data.parse(res);
@@ -36,7 +36,7 @@ module.exports = function(context) {
         type = context.data.get('type');
 
     if (!features) {
-        return flash(context.container, 'Add a feature to the map to save it');
+        return flash('Add a feature to the map to save it');
     }
 
     context.container.select('.map').classed('loading', true);
