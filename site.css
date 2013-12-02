@@ -8,8 +8,9 @@
 /* Feeling guilty with this one */
 .pad2r { padding-right:20px; }
 
-/* Hack */
-.unround .floppy { border-radius:3px 0 0 3px; }
+.user-nav .user-actions a:hover {
+  background:#f8f8f8;
+  }
 
 .user-nav {
   width:180px;
@@ -133,33 +134,136 @@ textarea.full-width {
   cursor:pointer;
   }
 
+/* Leaflet draw plugin
+------------------------------------------------ */
+.leaflet-control.leaflet-draw {
+  background:transparent;
+  margin:20px 0;
+  }
+.leaflet-control .leaflet-draw-section {
+  background:#000;
+  background:rgba(0,0,0,0.75);
+  margin-top:5px;
+  border-radius:0 3px 3px 0;
+  padding:5px 10px 10px;
+  }
+.leaflet-control.leaflet-draw .leaflet-bar {
+  background:transparent;
+  border:none;
+  }
+.leaflet-draw-toolbar {
+  margin:0;
+  }
+.leaflet-control .leaflet-draw-toolbar > a {
+  background:transparent url('img/sprite.png') no-repeat 0 0;
+  background-size:30px 180px;
+  width:30px;
+  height:30px;
+  border:none;
+  border-radius:3px;
+  margin-top:5px;
+  }
+  .leaflet-control .leaflet-draw-toolbar .leaflet-draw-toolbar-button-enabled,
+  .leaflet-draw-toolbar > a:hover {
+    background-color:#000;
+    }
+
+.leaflet-control.leaflet-draw .leaflet-draw-draw-polyline   { background-position:0 0; }
+.leaflet-control.leaflet-draw .leaflet-draw-draw-polygon    { background-position:0 -30px; }
+.leaflet-control.leaflet-draw .leaflet-draw-draw-rectangle  { background-position:0 -60px; }
+.leaflet-control.leaflet-draw .leaflet-draw-draw-marker     { background-position:0 -90px; }
+.leaflet-control.leaflet-draw .leaflet-draw-edit-edit       { background-position:0 -120px; }
+.leaflet-control.leaflet-draw .leaflet-draw-edit-remove     { background-position:0 -150px; }
+
+.leaflet-draw-actions {
+  left:50px;
+  bottom:3px;
+  top:inherit!important;
+  }
+.leaflet-draw-actions a {
+  background:#f1f075;
+  color:rgba(0,0,0,0.75);
+  height:30px;
+  line-height:30px;
+  font-size:12px;
+  font-weight:bold;
+  padding:0 10px;
+  margin-bottom:1px;
+  border:none!important;
+  border-radius:0 3px 3px 0!important;
+   -webkit-box-sizing:initial;
+      -moz-box-sizing:initial;
+           box-sizing:initial;
+
+  }
+  .leaflet-draw-actions a:hover {
+    background:#f1f075;
+    color:#000;
+    }
+
+@media
+  (-webkit-min-device-pixel-ratio:2),
+  (min-resolution:192dpi) {
+    .leaflet-draw-section a {
+      background-image:url('img/sprite@2x.png');
+    }
+  }
+
 /* Codemirror syntax highlighting
 ------------------------------------------------ */
-.cm-s-eclipse span.cm-meta {color: #FF1717;}
-.cm-s-eclipse span.cm-keyword { line-height: 1em; font-weight: bold; color: #7F0055; }
-.cm-s-eclipse span.cm-atom {color: #219;}
-.cm-s-eclipse span.cm-number {color: #164;}
-.cm-s-eclipse span.cm-def {color: #00f;}
-.cm-s-eclipse span.cm-variable {color: black;}
-.cm-s-eclipse span.cm-variable-2 {color: #0000C0;}
-.cm-s-eclipse span.cm-variable-3 {color: #0000C0;}
-.cm-s-eclipse span.cm-property {color: black;}
-.cm-s-eclipse span.cm-operator {color: black;}
-.cm-s-eclipse span.cm-comment {color: #3F7F5F;}
-.cm-s-eclipse span.cm-string {color: #2A00FF;}
-.cm-s-eclipse span.cm-string-2 {color: #f50;}
-.cm-s-eclipse span.cm-error {color: #f00;}
-.cm-s-eclipse span.cm-qualifier {color: #555;}
-.cm-s-eclipse span.cm-builtin {color: #30a;}
-.cm-s-eclipse span.cm-bracket {color: #cc7;}
-.cm-s-eclipse span.cm-tag {color: #170;}
-.cm-s-eclipse span.cm-attribute {color: #00c;}
-.cm-s-eclipse span.cm-link {color: #219;}
-
-.cm-s-eclipse .CodeMirror-matchingbracket {
-  outline:1px solid grey;
-  color:black !important;
+.CodeMirror {
+  color: rgba(0,0,0,.5);
+  font-family:Menlo, Bitstream Vera Sans Mono, Monaco, Consolas, monospace;
+  font-size:12px;
+  line-height:20px;
   }
+
+/* Prose Bright Theme
+ -------------------- */
+/* Dark Grey */
+.cm-s-eclipse                    { color:#3D494E; }
+.cm-s-eclipse span.cm-header     { color:#3D494E; font-weight:bold;}
+.cm-s-eclipse span.cm-variable-2 { color:#3D494E; }
+
+/* Medium Grey */
+.cm-s-eclipse span.cm-meta       { color:#516066; }
+.cm-s-eclipse span.cm-hr         { color:#516066;}
+
+/* Lighter Grey */
+.cm-s-eclipse span.cm-comment    { color:#868f93; }
+.cm-s-eclipse span.cm-qualifier  { color:#868f93; }
+
+/* Dark Blue/Green */
+.cm-s-eclipse span.cm-number     { color:#197987; }
+.cm-s-eclipse span.cm-variable   { color:#197987; }
+.cm-s-eclipse span.cm-builtin    { color:#197987; }
+.cm-s-eclipse span.cm-link       { color:#197987; text-decoration:underline;}
+.cm-s-eclipse span.cm-tag        { color:#197987; }
+
+/* Medium Blue/Green */
+.cm-s-eclipse span.cm-string     { color:#48abb9; }
+.cm-s-eclipse span.cm-string-2   { color:#48abb9; }
+.cm-s-eclipse span.cm-quote      { color:#48abb9;}
+.cm-s-eclipse span.cm-atom       { color:#48abb9; }
+
+/* Turtle Green */
+.cm-s-eclipse span.cm-property   { color:#82a367; }
+.cm-s-eclipse span.cm-operator   { color:#82a367; }
+.cm-s-eclipse span.cm-variable-3 { color:#82a367; }
+
+/* Light Turtle Green */
+.cm-s-eclipse span.cm-attribute  { color:#90bb74; }
+.cm-s-eclipse span.cm-def        { color:#90bb74; }
+
+/* Brick */
+.cm-s-eclipse span.cm-keyword    { color:#ec6c45; }
+.cm-s-eclipse span.cm-bracket    { color:#ec6c45; }
+
+/* Darker Brick */
+.cm-s-eclipse span.cm-error      { color:#e45346; }
+
+.cm-s-eclipse span.cm-em         { font-style:italic; }
+.cm-s-eclipse span.cm-strong     { font-weight:bold; }
 
 /* Markers
 ------------------------------------------------ */

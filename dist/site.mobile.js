@@ -19243,6 +19243,8 @@ function encode(_) {
         .replace(/"/g, '&quot;');
 }
 
+},{}],"topojson":[function(require,module,exports){
+module.exports=require('L9/2mq');
 },{}],"L9/2mq":[function(require,module,exports){
 var fs = require("fs");
 
@@ -19254,9 +19256,7 @@ topojson.filter = require("./lib/topojson/filter");
 topojson.prune = require("./lib/topojson/prune");
 topojson.bind = require("./lib/topojson/bind");
 
-},{"./lib/topojson/bind":66,"./lib/topojson/clockwise":69,"./lib/topojson/filter":73,"./lib/topojson/prune":76,"./lib/topojson/simplify":78,"./lib/topojson/topology":81,"fs":3}],"topojson":[function(require,module,exports){
-module.exports=require('L9/2mq');
-},{}],66:[function(require,module,exports){
+},{"./lib/topojson/bind":66,"./lib/topojson/clockwise":69,"./lib/topojson/filter":73,"./lib/topojson/prune":76,"./lib/topojson/simplify":78,"./lib/topojson/topology":81,"fs":3}],66:[function(require,module,exports){
 var type = require("./type"),
     topojson = require("../../");
 
@@ -23712,7 +23712,7 @@ module.exports = function(context) {
 
         var actions = [{
             title: 'Save',
-            klass: 'floppy',
+            klass: 'floppy round-left keyline-right',
             action: saveAction
         }, {
             title: 'New',
@@ -23723,7 +23723,7 @@ module.exports = function(context) {
         }];
 
         var actionLinks = selection.append('div')
-            .attr('class', 'pill unround col6')
+            .attr('class', 'col6 keyline-right user-actions')
             .selectAll('a')
             .data(actions)
             .enter()
@@ -23737,7 +23737,7 @@ module.exports = function(context) {
                 d.action.apply(this, d);
             })
             .attr('class', function(d) {
-                return d.klass + ' icon button unround col6';
+                return d.klass + ' icon quiet pad1 col6';
             })
             .call(bootstrap.tooltip().placement('bottom'));
 

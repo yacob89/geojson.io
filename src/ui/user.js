@@ -17,7 +17,7 @@ module.exports = function(context) {
 
         var actions = [{
             title: 'Save',
-            klass: 'floppy',
+            klass: 'floppy round-left keyline-right',
             action: saveAction
         }, {
             title: 'New',
@@ -28,7 +28,7 @@ module.exports = function(context) {
         }];
 
         var actionLinks = selection.append('div')
-            .attr('class', 'pill unround col6')
+            .attr('class', 'col6 keyline-right user-actions')
             .selectAll('a')
             .data(actions)
             .enter()
@@ -42,7 +42,7 @@ module.exports = function(context) {
                 d.action.apply(this, d);
             })
             .attr('class', function(d) {
-                return d.klass + ' icon button unround col6';
+                return d.klass + ' icon quiet pad1 col6';
             })
             .call(bootstrap.tooltip().placement('bottom'));
 
