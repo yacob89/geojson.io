@@ -1,4 +1,4 @@
-var topojson = require('topojson'),
+var topojson = require('topojson/index.js'),
     toGeoJSON = require('togeojson'),
     csv2geojson = require('csv2geojson'),
     osmtogeojson = require('osmtogeojson'),
