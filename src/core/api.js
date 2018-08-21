@@ -5,7 +5,7 @@ function api(context) {
 
     console.log('%c⚛ geojson.io api ⚛', 'font-family:monospace;font-size:20px;color:darkblue;');
     console.log('%cfrom here, you can customize geojson.io to your liking by mucking around with the internals', 'font-family:monospace;font-size:14px;color:darkblue;');
-    console.log('%chere\'s what\'s available ↓', 'color:blue;');
+    console.log('%chere\'s what\'s availablesss ↓', 'color:blue;');
     console.log('');
 
     console.log('%c- window.api.map: the leaflet map object', 'font-weight:bold;');
@@ -29,6 +29,8 @@ function api(context) {
 
     console.log('');
     console.log('%c  window.api.data.mergeFeatures([{ type: "Feature", properties: {}, geometry: { type: "Point", coordinates: [0, 0] } }]);', 'color:green;');
+
+    console.log('Isi dari seluruh context: ', context);
 
     window.api = {
         map: context.map,

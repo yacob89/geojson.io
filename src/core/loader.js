@@ -2,6 +2,12 @@ var qs = require('qs-hash'),
     zoomextent = require('../lib/zoomextent'),
     flash = require('../ui/flash');
 
+var dataURL;
+const axios = require('axios');
+
+//const REMOTE_SERVER_URL = 'http://54.245.202.137';
+const REMOTE_SERVER_URL = 'http://192.168.1.11';
+
 module.exports = function(context) {
 
     function success(err, d) {
@@ -44,6 +50,8 @@ module.exports = function(context) {
     }
 
     function loadUrl(data) {
+        console.log('Data URL adalah: ', data);
+        dataURL = data;
         d3.json(data)
             .header('Accept', 'application/vnd.geo+json')
             .on('load', onload)
@@ -81,4 +89,36 @@ module.exports = function(context) {
             context.data.fetch(query, success);
         }
     };
+};
+
+module.exports.geturl = function(context) {
+  console.log('Tes oper fungsi: ', dataURL);
+
+  var filenameIndex = dataURL.lastIndexOf('/');
+  var filename = dataURL.slice(filenameIndex + 1);
+
+  var usernameIndex = dataURL.lastIndexOf('amazonaws.com');
+  var username = dataURL.slice(usernameIndex + 14, filenameIndex);
+
+  console.log('Index Filename: ', filenameIndex);
+  console.log('String Filename: ', filename);
+
+  console.log('Index Username: ', usernameIndex);
+  console.log('String Username: ', username);
+
+  axios
+    .post(REMOTE_SERVER_URL + ':7555/api/normalupload', {
+      username: username,
+      filename: filename,
+      geojson: context
+    })
+    .then(function(response) {
+      console.log(response.data);
+      if (response.data == 'success') {
+        console.log('Server side converting success');
+      }
+    })
+    .catch(function(error) {
+      console.log('Server side converting error: ', error);
+    });
 };

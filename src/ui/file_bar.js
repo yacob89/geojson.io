@@ -16,6 +16,7 @@ var share = require('./share'),
     readFile = require('../lib/readfile'),
     meta = require('../lib/meta.js'),
     saver = require('../ui/saver.js'),
+    loader = require('../core/loader.js'),
     config = require('../config.js')(location.hostname);
 
 /**
@@ -45,6 +46,9 @@ module.exports = function fileBar(context) {
     }, {
         title: 'WKT',
         action: downloadWKT
+    }, {
+        title: 'MAPID',
+        action: downloadMAPID
     }];
 
     if (shpSupport) {
@@ -505,6 +509,14 @@ module.exports = function fileBar(context) {
         saveAs(new Blob([content], {
             type: 'text/plain;charset=utf-8'
         }), (meta && meta.name) || 'map.geojson');
+    }
+
+    function downloadMAPID(){
+        if (d3.event) d3.event.preventDefault();
+        var content = JSON.stringify(context.data.get('map'));
+        console.log('Mapid content: ', content);
+        console.log('URL asal: ', loader.dataURL);
+        loader.geturl(content);
     }
 
     function downloadDSV() {

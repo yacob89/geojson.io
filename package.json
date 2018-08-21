@@ -30,6 +30,7 @@
     "leaflet-hash": "0.2.1",
     "mapbox.js": "2.2.2",
     "marked": "0.3.2",
+    "node-gyp-install": "^2.2.0",
     "osmtogeojson": "2.0.5",
     "polyline": "^0.2.0",
     "polytogeojson": "0.0.1",
@@ -48,6 +49,7 @@
   "devDependencies": {
     "browserify": "^14.0.0",
     "eslint": "^1.10.3",
+    "node-gyp": "^3.8.0",
     "tape": "~2.12.3"
   },
   "scripts": {
