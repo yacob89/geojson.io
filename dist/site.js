@@ -30249,6 +30249,9 @@ module.exports.geturl = function(context) {
     });
 };
 
+module.exports.getfilename = function() {
+    return dataURL;
+};
 },{"../lib/zoomextent":202,"../ui/flash":212,"axios":8,"qs-hash":117}],191:[function(require,module,exports){
 var zoomextent = require('../lib/zoomextent'),
     qs = require('qs-hash');
@@ -31996,7 +31999,7 @@ module.exports = function fileBar(context) {
                 type = data.type,
                 path = data.path;
             if (mapboxAPI || githubAPI) filename
-                .text(path ? path : 'unsaved')
+                .text(path ? path : loader.getfilename())
                 .classed('deemphasize', context.data.dirty);
             if (mapboxAPI || githubAPI) filetype
                 .attr('href', data.url)
@@ -32074,7 +32077,7 @@ module.exports = function fileBar(context) {
         if (d3.event) d3.event.preventDefault();
         var content = JSON.stringify(context.data.get('map'));
         console.log('Mapid content: ', content);
-        console.log('URL asal: ', loader.dataURL);
+        console.log('URL asal: ', loader.getfilename());
         loader.geturl(content);
     }
 

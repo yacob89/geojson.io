@@ -5,8 +5,8 @@ var qs = require('qs-hash'),
 var dataURL;
 const axios = require('axios');
 
-//const REMOTE_SERVER_URL = 'http://54.245.202.137';
-const REMOTE_SERVER_URL = 'http://192.168.1.11';
+const REMOTE_SERVER_URL = 'http://54.245.202.137';
+//const REMOTE_SERVER_URL = 'http://192.168.1.11';
 
 module.exports = function(context) {
 
@@ -121,4 +121,8 @@ module.exports.geturl = function(context) {
     .catch(function(error) {
       console.log('Server side converting error: ', error);
     });
+};
+
+module.exports.getfilename = function() {
+    return dataURL;
 };

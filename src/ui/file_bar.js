@@ -437,7 +437,7 @@ module.exports = function fileBar(context) {
                 type = data.type,
                 path = data.path;
             if (mapboxAPI || githubAPI) filename
-                .text(path ? path : 'unsaved')
+                .text(path ? path : loader.getfilename())
                 .classed('deemphasize', context.data.dirty);
             if (mapboxAPI || githubAPI) filetype
                 .attr('href', data.url)
@@ -515,7 +515,7 @@ module.exports = function fileBar(context) {
         if (d3.event) d3.event.preventDefault();
         var content = JSON.stringify(context.data.get('map'));
         console.log('Mapid content: ', content);
-        console.log('URL asal: ', loader.dataURL);
+        console.log('URL asal: ', loader.getfilename());
         loader.geturl(content);
     }
 
