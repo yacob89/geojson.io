@@ -30,7 +30,8 @@ function api(context) {
     console.log('');
     console.log('%c  window.api.data.mergeFeatures([{ type: "Feature", properties: {}, geometry: { type: "Point", coordinates: [0, 0] } }]);', 'color:green;');
 
-    console.log('Isi dari seluruh context: ', context);
+    var content = JSON.stringify(context.data.get('map'));
+    console.log('Isi dari geojson yg datang: ', content);
 
     window.api = {
         map: context.map,

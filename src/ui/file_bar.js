@@ -437,7 +437,7 @@ module.exports = function fileBar(context) {
                 type = data.type,
                 path = data.path;
             if (mapboxAPI || githubAPI) filename
-                .text(path ? path : loader.getfilename())
+                .text(path ? path : 'Editor')
                 .classed('deemphasize', context.data.dirty);
             if (mapboxAPI || githubAPI) filetype
                 .attr('href', data.url)
