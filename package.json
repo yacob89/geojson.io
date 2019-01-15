@@ -53,7 +53,8 @@
     "tape": "~2.12.3"
   },
   "scripts": {
-    "start": "nodewebkit",
+    "prestart": "make",
+    "start": "serve -p 8080",
     "test": "eslint src",
     "test-browser": "browserify test/index.js | testling"
   },
